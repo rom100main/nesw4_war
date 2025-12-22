@@ -7,7 +7,7 @@ pub const SHOP_PRICE_RULE: usize = 1;
 
 pub const GRID_SIZE: usize = 50;
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum CellState {
     Neutral,
     Player1,
@@ -41,14 +41,47 @@ impl Grid {
     }
 
     pub fn next(&mut self, rules: Vec<Rule>) {
-        // TODO
-        // // Player1
-        // for values.size
-        //      for rules
-        //          if rule.next(values)
-        //          change state
-        // // Player2
-        // // /!\ same but becareful direction !
+        let mut new_values = self.values.clone();
+
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let current_idx = y * self.width + x;
+                let current_state = self.values[current_idx];
+
+                // Get the cell states for checking rules
+                // top: cell above
+                // inner: current cell
+                // right: cell to the right
+                let (top_idx, right_idx) = if self.toric {
+                    // Toroidal - wrap around
+                    let top_y = if y == 0 { self.height - 1 } else { y - 1 };
+                    let right_x = if x == self.width - 1 { 0 } else { x + 1 };
+                    (top_y * self.width + x, y * self.width + right_x)
+                } else {
+                    // Non-toroidal - out of bounds
+                    if y == 0 || x == self.width - 1 {
+                        continue;
+                    }
+                    ((y - 1) * self.width + x, y * self.width + (x + 1))
+                };
+
+                let top_state = self.values[top_idx];
+                let right_state = self.values[right_idx];
+
+                // Check if any rule matches
+                for rule in &rules {
+                    if rule.next(top_state, current_state, right_state) {
+                        // Change current cell to Player1 if it's currently neutral or Player2
+                        if current_state == CellState::Neutral {
+                            new_values[current_idx] = CellState::Player1;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        self.values = new_values;
     }
 }
 
@@ -60,15 +93,27 @@ pub struct Rule {
 }
 
 impl Rule {
-    /*
     pub fn new() -> Rule {
+        use rand::Rng;
+        let mut rng = rand::thread_rng();
         Rule {
-            top:, // TODO: random
-            inner:,
-            right:,
+            top: match rng.gen_range(0..3) {
+                0 => CellState::Neutral,
+                1 => CellState::Player1,
+                _ => CellState::Player2,
+            },
+            inner: match rng.gen_range(0..3) {
+                0 => CellState::Neutral,
+                1 => CellState::Player1,
+                _ => CellState::Player2,
+            },
+            right: match rng.gen_range(0..3) {
+                0 => CellState::Neutral,
+                1 => CellState::Player1,
+                _ => CellState::Player2,
+            },
         }
     }
-    */
 
     pub fn next(&self, top: CellState, inner: CellState, right: CellState) -> bool {
         *self == Rule { top, inner, right }
@@ -113,12 +158,13 @@ pub struct Shop {
 }
 
 impl Shop {
-    /*
     pub fn new() -> Shop {
-        let shop: Shop;
-        // TODO: add SHOP_NB_RULES new rule (which are randomly generate)
+        let mut rules = Vec::new();
+        for _ in 0..SHOP_NB_RULES {
+            rules.push(Rule::new());
+        }
+        Shop { rules }
     }
-    */
 
     pub fn buy_rule(&mut self, mut player: Player, number: usize) -> Result<(), ()> {
         if player.money < SHOP_PRICE_RULE {
@@ -142,7 +188,6 @@ pub struct Game {
 }
 
 impl Game {
-    /*
     pub fn new() -> Game {
         let size_grid = GRID_SIZE;
         Game {
@@ -150,10 +195,9 @@ impl Game {
             player2: Player::new_p2(size_grid),
             grid: Grid::new(size_grid),
             size_grid,
-            shop: Shop::new()
+            shop: Shop::new(),
         }
     }
-    */
 
     pub fn new_round(&mut self) {
         self.new_grid();
@@ -164,11 +208,18 @@ impl Game {
 
     fn new_grid(&mut self) {
         self.grid = Grid::new(self.size_grid);
-        // TODO: set player spawn
+        for spawn in &self.player1.spawn {
+            let idx = spawn.y * self.size_grid + spawn.x;
+            self.grid.values[idx] = CellState::Player1;
+        }
+        for spawn in &self.player2.spawn {
+            let idx = spawn.y * self.size_grid + spawn.x;
+            self.grid.values[idx] = CellState::Player2;
+        }
     }
 
     fn new_shop(&mut self) {
-        // self.shop = Shop::new();
+        self.shop = Shop::new();
     }
 
     pub fn next_p1(mut self) {
