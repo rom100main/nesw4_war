@@ -20,6 +20,8 @@ pub struct Pos {
 }
 
 pub struct Grid {
+    width: usize,
+    height: usize,
     values: Vec<CellState>,
     toric: bool,
 }
@@ -27,7 +29,9 @@ pub struct Grid {
 impl Grid {
     pub fn new(size: usize) -> Grid {
         Grid {
-            values: vec![CellState::Neutral; size],
+            width: size,
+            height: size,
+            values: vec![CellState::Neutral; size * size],
             toric: true,
         }
     }
