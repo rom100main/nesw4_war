@@ -40,7 +40,7 @@ impl Grid {
         self.values.iter().filter(|v| **v == value).count()
     }
 
-    pub fn next(&mut self, rules: Vec<Rule>) {
+    pub fn next(&mut self, state: CellState, rules: &Vec<Rule>) {
         let mut new_values = self.values.clone();
 
         for y in 0..self.height {
@@ -69,13 +69,9 @@ impl Grid {
                 let right_state = self.values[right_idx];
 
                 // Check if any rule matches
-                for rule in &rules {
+                for rule in rules {
                     if rule.next(top_state, current_state, right_state) {
-                        // Change current cell to Player1 if it's currently neutral or Player2
-                        if current_state == CellState::Neutral {
-                            new_values[current_idx] = CellState::Player1;
-                        }
-                        break;
+                        new_values[current_idx] = state;
                     }
                 }
             }
@@ -166,7 +162,7 @@ impl Shop {
         Shop { rules }
     }
 
-    pub fn buy_rule(&mut self, mut player: Player, number: usize) -> Result<(), ()> {
+    pub fn buy_rule(&mut self, player: &mut Player, number: usize) -> Result<(), ()> {
         if player.money < SHOP_PRICE_RULE {
             // Err(()) type error?
         }
@@ -222,13 +218,12 @@ impl Game {
         self.shop = Shop::new();
     }
 
-    pub fn next_p1(mut self) {
-        // CHECK: mut and not &mut?
-        self.grid.next(self.player1.rules);
+    pub fn next_p1(&mut self) {
+        self.grid.next(CellState::Player1, &self.player1.rules);
     }
 
-    pub fn next_p2(mut self) {
-        self.grid.next(self.player2.rules);
+    pub fn next_p2(&mut self) {
+        self.grid.next(CellState::Player2, &self.player2.rules);
     }
 }
 
