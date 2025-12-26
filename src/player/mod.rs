@@ -1,6 +1,6 @@
-use crate::types::Pos;
 use crate::constants::{PLAYER_MAX_RULES, PLAYER_START_MONEY};
 use crate::rule::Rule;
+use crate::types::Pos;
 
 pub struct Player {
     pub rules: Vec<Rule>,

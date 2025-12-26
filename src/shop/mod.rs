@@ -1,6 +1,6 @@
-use crate::rule::Rule;
+use crate::constants::{PLAYER_MAX_RULES, SHOP_NB_RULES, SHOP_PRICE_RULE};
 use crate::player::Player;
-use crate::constants::{SHOP_NB_RULES, SHOP_PRICE_RULE, PLAYER_MAX_RULES};
+use crate::rule::Rule;
 
 pub struct Shop {
     rules: Vec<Rule>,
@@ -15,14 +15,14 @@ impl Shop {
         Shop { rules }
     }
 
-    pub fn buy_rule(&mut self, player: &mut Player, number: usize) -> Result<(), ()> {
+    pub fn buy_rule(&mut self, player: &mut Player, index: usize) -> Result<(), ()> {
         if player.money < SHOP_PRICE_RULE {
             return Err(());
         }
         if player.rules.len() >= PLAYER_MAX_RULES {
             return Err(());
         }
-        player.rules.push(self.rules.remove(number));
+        player.rules.push(self.rules.remove(index));
         player.money -= SHOP_PRICE_RULE;
         Ok(())
     }
