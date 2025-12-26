@@ -1,5 +1,5 @@
-use crate::types::CellState;
 use crate::rule::Rule;
+use crate::types::CellState;
 
 pub struct Grid {
     pub width: usize,
@@ -27,8 +27,14 @@ impl Grid {
 
         for y in 0..self.height {
             for x in 0..self.width {
+                if self.values[y * self.width + x] == state {
+                    continue;
+                }
+
                 let current_idx = y * self.width + x;
                 let current_state = self.values[current_idx];
+
+                // TODO(Clément): check if player 2 in this case reverse rul
 
                 // Get the cell states for checking rules
                 // top: cell above
@@ -54,6 +60,7 @@ impl Grid {
                 for rule in rules {
                     if rule.next(top_state, current_state, right_state) {
                         new_values[current_idx] = state;
+                        continue;
                     }
                 }
             }
