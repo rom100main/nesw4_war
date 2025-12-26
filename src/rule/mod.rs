@@ -34,3 +34,29 @@ impl Rule {
         *self == Rule { top, inner, right }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::types::CellState;
+
+    #[test]
+    fn test_rule_next_true() {
+        let rule = Rule {
+            top: CellState::Player1,
+            inner: CellState::Player2,
+            right: CellState::Neutral,
+        };
+        assert!(rule.next(CellState::Player1, CellState::Player2, CellState::Neutral));
+    }
+
+    #[test]
+    fn test_rule_next_false() {
+        let rule = Rule {
+            top: CellState::Player1,
+            inner: CellState::Player2,
+            right: CellState::Neutral,
+        };
+        assert!(!rule.next(CellState::Player2, CellState::Player2, CellState::Neutral));
+    }
+}
