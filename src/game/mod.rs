@@ -5,11 +5,11 @@ use crate::types::CellState;
 use crate::constants::{GRID_SIZE, PLAYER_MONEY};
 
 pub struct Game {
-    player1: Player,
-    player2: Player,
-    grid: Grid,
-    size_grid: usize,
-    shop: Shop,
+    pub player1: Player,
+    pub player2: Player,
+    pub grid: Grid,
+    pub size_grid: usize,
+    pub shop: Shop,
 }
 
 impl Game {

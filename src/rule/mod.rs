@@ -2,9 +2,9 @@ use crate::types::CellState;
 
 #[derive(PartialEq)]
 pub struct Rule {
-    top: CellState,
-    inner: CellState,
-    right: CellState,
+    pub top: CellState,
+    pub inner: CellState,
+    pub right: CellState,
 }
 
 impl Rule {
