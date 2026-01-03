@@ -73,11 +73,11 @@ impl Grid {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui) {
-        let available_size = ui.available_size();
+        let available_rect = ui.available_rect_before_wrap();
+        let padding = 10.0;
 
-        let padding = 20.0;
-        let max_width = available_size.x - padding * 2.0;
-        let max_height = available_size.y - padding * 2.0;
+        let max_width = available_rect.width() - padding * 2.0;
+        let max_height = available_rect.height() - padding * 2.0;
 
         let cell_size_w = max_width / self.width as f32;
         let cell_size_h = max_height / self.height as f32;
@@ -87,13 +87,16 @@ impl Grid {
         let grid_width_px = self.width as f32 * cell_size;
         let grid_height_px = self.height as f32 * cell_size;
 
-        ui.add_space(10.0);
+        let x_pos = available_rect.min.x + padding;
+        let y_pos = available_rect.min.y + padding;
 
-        let x_pos = (available_size.x - grid_width_px) / 2.0;
-        let y_pos = ui.cursor().min.y;
+        let painter_rect = egui::Rect::from_min_size(
+            egui::pos2(x_pos, y_pos),
+            egui::vec2(grid_width_px, grid_height_px),
+        );
 
         let (_, painter) = ui.allocate_painter(
-            egui::vec2(available_size.x, grid_height_px + padding * 2.0),
+            egui::vec2(grid_width_px, grid_height_px),
             egui::Sense::hover(),
         );
 
@@ -132,10 +135,7 @@ impl Grid {
         }
 
         painter.rect_stroke(
-            egui::Rect::from_min_size(
-                egui::pos2(x_pos, y_pos),
-                egui::vec2(grid_width_px, grid_height_px),
-            ),
+            painter_rect,
             2.0,
             egui::Stroke::new(2.0, egui::Color32::BLACK),
             egui::StrokeKind::Inside,
