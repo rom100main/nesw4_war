@@ -12,11 +12,29 @@ pub struct Grid {
 }
 
 impl Grid {
-    pub fn new(size: usize) -> Grid {
+    /// Create a new grid. \
+    /// `pX_spawn_p` is the spawn probability of the player X. \
+    /// `p1_spawn_p + p2_spawn_p` should be smaller than 1.0.
+    pub fn new(size: usize, p1_spawn_p: f32, p2_spawn_p: f32) -> Grid {
         Grid {
             width: size,
             height: size,
-            values: vec![CellState::Neutral; size * size],
+            values: {
+                use rand::Rng;
+                let mut values: Vec<CellState> = vec![];
+                for _ in 0..size * size {
+                    let mut rng = rand::thread_rng();
+                    let x: f32 = rng.r#gen();
+                    if x <= p1_spawn_p {
+                        values.push(CellState::Player1);
+                    } else if x <= p1_spawn_p + p2_spawn_p {
+                        values.push(CellState::Player2);
+                    } else {
+                        values.push(CellState::Neutral);
+                    }
+                }
+                values
+            },
             toric: true,
         }
     }

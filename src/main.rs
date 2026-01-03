@@ -40,10 +40,58 @@ impl Default for GameUI {
         };
         game.player1.rules.push(rule1);
 
+        let rule1 = Rule {
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Player1,
+            right: CellState::Neutral,
+        };
+        game.player1.rules.push(rule1);
+
+        let rule1 = Rule {
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
+            right: CellState::Player1,
+        };
+        game.player1.rules.push(rule1);
+
+        let rule1 = Rule {
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Player1,
+            right: CellState::Player1,
+        };
+        game.player1.rules.push(rule1);
+
         // Player 2: Different spreading pattern towards right
         let rule2 = Rule {
             top: CellState::Neutral,
             bottom: CellState::Neutral,
+            left: CellState::Neutral,
+            right: CellState::Player2,
+        };
+        game.player2.rules.push(rule2);
+
+        let rule2 = Rule {
+            top: CellState::Player2,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
+            right: CellState::Player2,
+        };
+        game.player2.rules.push(rule2);
+
+        let rule2 = Rule {
+            top: CellState::Neutral,
+            bottom: CellState::Player2,
+            left: CellState::Neutral,
+            right: CellState::Player2,
+        };
+        game.player2.rules.push(rule2);
+
+        let rule2 = Rule {
+            top: CellState::Player2,
+            bottom: CellState::Player2,
             left: CellState::Neutral,
             right: CellState::Player2,
         };

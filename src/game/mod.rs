@@ -1,8 +1,7 @@
-use crate::constants::{GRID_SIZE, PLAYER_MONEY};
+use crate::constants::{GRID_SIZE, PLAYER_MONEY, PLAYER_SPAWN_PROBA};
 use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
-use crate::types::CellState;
 
 pub struct Game {
     pub player1: Player,
@@ -17,8 +16,8 @@ impl Game {
         let size_grid = GRID_SIZE;
         Game {
             player1: Player::new(),
-            player2: Player::new_p2(size_grid),
-            grid: Grid::new(size_grid),
+            player2: Player::new(),
+            grid: Grid::new(size_grid, PLAYER_SPAWN_PROBA, PLAYER_SPAWN_PROBA),
             size_grid,
             shop: Shop::new(),
         }
@@ -32,15 +31,11 @@ impl Game {
     }
 
     fn new_grid(&mut self) {
-        self.grid = Grid::new(self.size_grid);
-        for spawn in &self.player1.spawn {
-            let idx = spawn.y * self.size_grid + spawn.x;
-            self.grid.values[idx] = CellState::Player1;
-        }
-        for spawn in &self.player2.spawn {
-            let idx = spawn.y * self.size_grid + spawn.x;
-            self.grid.values[idx] = CellState::Player2;
-        }
+        self.grid = Grid::new(
+            self.size_grid,
+            self.player1.spawn_proba,
+            self.player2.spawn_proba,
+        );
     }
 
     fn new_shop(&mut self) {
