@@ -1,4 +1,4 @@
-use crate::constants::{GRID_SIZE, PLAYER_MONEY};
+use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_MONEY};
 use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
@@ -11,6 +11,9 @@ pub struct Game {
     pub grid: Grid,
     pub size_grid: usize,
     pub shop: Shop,
+    pub iteration: usize,
+    pub round_over: bool,
+    pub round_result: Option<String>,
 }
 
 impl Game {
@@ -22,6 +25,9 @@ impl Game {
             grid: Grid::new(size_grid),
             size_grid,
             shop: Shop::new(),
+            iteration: 0,
+            round_over: false,
+            round_result: None,
         }
     }
 
@@ -30,6 +36,9 @@ impl Game {
         self.new_shop();
         self.player1.money = PLAYER_MONEY;
         self.player2.money = PLAYER_MONEY;
+        self.iteration = 0;
+        self.round_over = false;
+        self.round_result = None;
     }
 
     fn new_grid(&mut self) {
@@ -56,6 +65,32 @@ impl Game {
         self.grid.next(CellState::Player2, &self.player2.rules);
     }
 
+    pub fn advance_iteration(&mut self) {
+        if self.round_over {
+            return;
+        }
+        self.iteration += 1;
+        if self.iteration >= MAX_ITERATIONS {
+            self.end_round();
+        }
+    }
+
+    fn end_round(&mut self) {
+        self.round_over = true;
+        let p1_count = self.grid.count(CellState::Player1);
+        let p2_count = self.grid.count(CellState::Player2);
+
+        if p1_count > p2_count {
+            self.player1.win += 1;
+            self.round_result = Some(format!("Player 1 wins! {} vs {}", p1_count, p2_count));
+        } else if p2_count > p1_count {
+            self.player2.win += 1;
+            self.round_result = Some(format!("Player 2 wins! {} vs {}", p2_count, p1_count));
+        } else {
+            self.round_result = Some(format!("Draw! {} - {}", p1_count, p2_count));
+        }
+    }
+
     pub fn show(
         &mut self,
         ui: &mut egui::Ui,
@@ -77,6 +112,13 @@ impl Game {
 
             self.player1.show(ui, 1, p1_count);
             self.player2.show(ui, 2, p2_count);
+
+            let iter_text = if self.round_over {
+                format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
+            } else {
+                format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
+            };
+            ui.label(iter_text);
 
             ui.label("Update Speed:");
             egui::ComboBox::from_label("")
@@ -107,5 +149,10 @@ impl Game {
 
         self.grid.show(ui);
         self.shop.show(ui);
+
+        if let Some(ref result) = self.round_result {
+            ui.add_space(10.0);
+            ui.heading(result);
+        }
     }
 }

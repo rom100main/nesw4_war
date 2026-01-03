@@ -37,12 +37,13 @@ impl Player {
 
     pub fn show(&self, ui: &mut egui::Ui, player_num: i32, cell_count: usize) {
         ui.label(format!(
-            "Player {}: {} cells | Money: {} | Rules: {}/{}",
+            "Player {}: {} cells | Money: {} | Rules: {}/{} | Score: {}",
             player_num,
             cell_count,
             self.money,
             self.rules.len(),
-            self.max_rules
+            self.max_rules,
+            self.win
         ));
     }
 }

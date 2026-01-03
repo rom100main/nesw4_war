@@ -98,8 +98,12 @@ impl eframe::App for GameUI {
 
 impl GameUI {
     fn update_game(&mut self) {
+        if self.game.round_over {
+            return;
+        }
         self.game.next_p1();
         self.game.next_p2();
+        self.game.advance_iteration();
     }
 }
 
