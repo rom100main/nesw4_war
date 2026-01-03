@@ -97,28 +97,14 @@ impl Game {
         new_round_clicked: &mut bool,
         update_interval: &mut std::time::Duration,
     ) {
-        ui.horizontal(|ui| {
-            ui.heading("ToomWar Grid Game");
-            ui.separator();
+        ui.heading("ToomWar Grid Game");
 
+        ui.horizontal(|ui| {
             if ui.button("New Round").clicked() {
                 *new_round_clicked = true;
             }
 
             ui.checkbox(&mut self.grid.show_grid_lines, "Show Grid Lines");
-
-            let p1_count = self.grid.count(CellState::Player1);
-            let p2_count = self.grid.count(CellState::Player2);
-
-            self.player1.show(ui, 1, p1_count);
-            self.player2.show(ui, 2, p2_count);
-
-            let iter_text = if self.round_over {
-                format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
-            } else {
-                format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
-            };
-            ui.label(iter_text);
 
             ui.label("Update Speed:");
             egui::ComboBox::from_label("")
@@ -147,12 +133,34 @@ impl Game {
                 });
         });
 
-        self.grid.show(ui);
-        self.shop.show(ui);
+        let p1_count = self.grid.count(CellState::Player1);
+        let p2_count = self.grid.count(CellState::Player2);
 
-        if let Some(ref result) = self.round_result {
-            ui.add_space(10.0);
-            ui.heading(result);
-        }
+        ui.columns(3, |columns| {
+            columns[0].vertical(|ui| {
+                ui.heading("Player 1");
+                self.player1.show(ui, p1_count);
+            });
+
+            columns[1].vertical(|ui| {
+                let iter_text = if self.round_over {
+                    format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
+                } else {
+                    format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
+                };
+                ui.heading(iter_text);
+                self.grid.show(ui);
+
+                if let Some(ref result) = self.round_result {
+                    ui.add_space(10.0);
+                    ui.heading(result);
+                }
+            });
+
+            columns[2].vertical(|ui| {
+                ui.heading("Player 2");
+                self.player2.show(ui, p2_count);
+            });
+        });
     }
 }

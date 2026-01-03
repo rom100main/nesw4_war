@@ -35,15 +35,22 @@ impl Player {
         }
     }
 
-    pub fn show(&self, ui: &mut egui::Ui, player_num: i32, cell_count: usize) {
-        ui.label(format!(
-            "Player {}: {} cells | Money: {} | Rules: {}/{} | Score: {}",
-            player_num,
-            cell_count,
-            self.money,
-            self.rules.len(),
-            self.max_rules,
-            self.win
-        ));
+    pub fn show(&self, ui: &mut egui::Ui, cell_count: usize) {
+        ui.label(format!("Cells: {}", cell_count));
+        ui.label(format!("Money: {}", self.money));
+        ui.label(format!("Rules: {}/{}", self.rules.len(), self.max_rules));
+        ui.label(format!("Score (wins): {}", self.win));
+
+        ui.add_space(10.0);
+        ui.label("Rules:");
+        for (i, rule) in self.rules.iter().enumerate() {
+            ui.label(format!(
+                "{}. {} | {} | {}",
+                i + 1,
+                rule.top,
+                rule.inner,
+                rule.right
+            ));
+        }
     }
 }
