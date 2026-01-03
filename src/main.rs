@@ -15,7 +15,6 @@ pub use shop::Shop;
 pub use types::*;
 
 use eframe::egui;
-use egui::{Color32, Rect, pos2, vec2};
 use std::time::{Duration, Instant};
 
 struct GameUI {
@@ -189,7 +188,8 @@ impl GameUI {
                 let x = x_pos + col as f32 * cell_size;
                 let y = y_pos + row as f32 * cell_size;
 
-                let cell_rect = Rect::from_min_size(pos2(x, y), vec2(cell_size, cell_size));
+                let cell_rect =
+                    egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(cell_size, cell_size));
 
                 let cell_idx = row * self.game.grid.width + col;
                 let cell_state = self.game.grid.values[cell_idx];
@@ -197,20 +197,20 @@ impl GameUI {
                 // Draw filled rectangle based on cell state
                 match cell_state {
                     CellState::Neutral => {
-                        painter.rect_filled(cell_rect, 0.0, Color32::from_gray(200));
+                        painter.rect_filled(cell_rect, 0.0, egui::Color32::from_gray(200));
                     }
                     CellState::Player1 => {
                         painter.rect_filled(
                             cell_rect,
                             0.0,
-                            Color32::from_rgb(255, 100, 100), // Red
+                            egui::Color32::from_rgb(255, 100, 100), // Red
                         );
                     }
                     CellState::Player2 => {
                         painter.rect_filled(
                             cell_rect,
                             0.0,
-                            Color32::from_rgb(100, 100, 255), // Blue
+                            egui::Color32::from_rgb(100, 100, 255), // Blue
                         );
                     }
                 }
@@ -220,7 +220,7 @@ impl GameUI {
                     painter.rect_stroke(
                         cell_rect,
                         0.0,
-                        egui::Stroke::new(0.5, Color32::from_gray(150)),
+                        egui::Stroke::new(0.5, egui::Color32::from_gray(150)),
                         egui::StrokeKind::Inside,
                     );
                 }
@@ -229,9 +229,12 @@ impl GameUI {
 
         // Draw border around the entire grid
         painter.rect_stroke(
-            Rect::from_min_size(pos2(x_pos, y_pos), vec2(grid_width_px, grid_height_px)),
+            egui::Rect::from_min_size(
+                egui::pos2(x_pos, y_pos),
+                egui::vec2(grid_width_px, grid_height_px),
+            ),
             2.0,
-            egui::Stroke::new(2.0, Color32::BLACK),
+            egui::Stroke::new(2.0, egui::Color32::BLACK),
             egui::StrokeKind::Inside,
         );
     }
