@@ -1,9 +1,10 @@
 use crate::constants::{PLAYER_MAX_RULES, SHOP_NB_RULES, SHOP_PRICE_RULE};
 use crate::player::Player;
 use crate::rule::Rule;
+use eframe::egui;
 
 pub struct Shop {
-    rules: Vec<Rule>,
+    pub rules: Vec<Rule>,
 }
 
 impl Shop {
@@ -26,4 +27,6 @@ impl Shop {
         player.money -= SHOP_PRICE_RULE;
         Ok(())
     }
+
+    pub fn show(&self, _ui: &mut egui::Ui) {}
 }

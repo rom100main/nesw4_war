@@ -3,6 +3,7 @@ use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
 use crate::types::CellState;
+use eframe::egui;
 
 pub struct Game {
     pub player1: Player,
@@ -53,5 +54,58 @@ impl Game {
 
     pub fn next_p2(&mut self) {
         self.grid.next(CellState::Player2, &self.player2.rules);
+    }
+
+    pub fn show(
+        &mut self,
+        ui: &mut egui::Ui,
+        new_round_clicked: &mut bool,
+        update_interval: &mut std::time::Duration,
+    ) {
+        ui.horizontal(|ui| {
+            ui.heading("ToomWar Grid Game");
+            ui.separator();
+
+            if ui.button("New Round").clicked() {
+                *new_round_clicked = true;
+            }
+
+            ui.checkbox(&mut self.grid.show_grid_lines, "Show Grid Lines");
+
+            let p1_count = self.grid.count(CellState::Player1);
+            let p2_count = self.grid.count(CellState::Player2);
+
+            self.player1.show(ui, 1, p1_count);
+            self.player2.show(ui, 2, p2_count);
+
+            ui.label("Update Speed:");
+            egui::ComboBox::from_label("")
+                .selected_text(format!("{}ms", update_interval.as_millis()))
+                .show_ui(ui, |ui| {
+                    ui.selectable_value(
+                        update_interval,
+                        std::time::Duration::from_millis(100),
+                        "100ms",
+                    );
+                    ui.selectable_value(
+                        update_interval,
+                        std::time::Duration::from_millis(200),
+                        "200ms",
+                    );
+                    ui.selectable_value(
+                        update_interval,
+                        std::time::Duration::from_millis(300),
+                        "300ms",
+                    );
+                    ui.selectable_value(
+                        update_interval,
+                        std::time::Duration::from_millis(500),
+                        "500ms",
+                    );
+                });
+        });
+
+        self.grid.show(ui);
+        self.shop.show(ui);
     }
 }

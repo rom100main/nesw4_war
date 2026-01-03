@@ -1,6 +1,7 @@
 use crate::constants::{PLAYER_MAX_RULES, PLAYER_START_MONEY};
 use crate::rule::Rule;
 use crate::types::Pos;
+use eframe::egui;
 
 pub struct Player {
     pub rules: Vec<Rule>,
@@ -32,5 +33,16 @@ impl Player {
             money: PLAYER_START_MONEY,
             win: 0,
         }
+    }
+
+    pub fn show(&self, ui: &mut egui::Ui, player_num: i32, cell_count: usize) {
+        ui.label(format!(
+            "Player {}: {} cells | Money: {} | Rules: {}/{}",
+            player_num,
+            cell_count,
+            self.money,
+            self.rules.len(),
+            self.max_rules
+        ));
     }
 }
