@@ -221,6 +221,7 @@ impl GameUI {
                         cell_rect,
                         0.0,
                         egui::Stroke::new(0.5, Color32::from_gray(150)),
+                        egui::StrokeKind::Inside,
                     );
                 }
             }
@@ -231,6 +232,7 @@ impl GameUI {
             Rect::from_min_size(pos2(x_pos, y_pos), vec2(grid_width_px, grid_height_px)),
             2.0,
             egui::Stroke::new(2.0, Color32::BLACK),
+            egui::StrokeKind::Inside,
         );
     }
 
@@ -250,6 +252,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(eframe::run_native(
         "ToomWar",
         options,
-        Box::new(|_cc| Box::<GameUI>::default()),
+        Box::new(|_cc| Ok(Box::<GameUI>::default())),
     )?)
 }

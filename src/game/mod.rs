@@ -1,8 +1,8 @@
-use crate::player::Player;
+use crate::constants::{GRID_SIZE, PLAYER_MONEY};
 use crate::grid::Grid;
+use crate::player::Player;
 use crate::shop::Shop;
 use crate::types::CellState;
-use crate::constants::{GRID_SIZE, PLAYER_MONEY};
 
 pub struct Game {
     pub player1: Player,
