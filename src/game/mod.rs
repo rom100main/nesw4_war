@@ -1,8 +1,8 @@
-use crate::player::Player;
+use crate::constants::{GRID_SIZE, PLAYER_MONEY};
 use crate::grid::Grid;
+use crate::player::Player;
 use crate::shop::Shop;
 use crate::types::CellState;
-use crate::constants::{GRID_SIZE, PLAYER_MONEY};
 
 pub struct Game {
     pub player1: Player,
@@ -45,13 +45,5 @@ impl Game {
 
     fn new_shop(&mut self) {
         self.shop = Shop::new();
-    }
-
-    pub fn next_p1(&mut self) {
-        self.grid.next(CellState::Player1, &self.player1.rules);
-    }
-
-    pub fn next_p2(&mut self) {
-        self.grid.next(CellState::Player2, &self.player2.rules);
     }
 }

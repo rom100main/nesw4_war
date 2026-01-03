@@ -31,35 +31,23 @@ impl Default for GameUI {
         game.new_round(); // Initialize the game with a new round
 
         // Add more effective rules for both players to demonstrate grid evolution
-        // Player 1: Spread to adjacent neutral cells
+        // Player 1: Spread towards bottom
         let rule1 = Rule {
-            top: CellState::Neutral,
-            inner: CellState::Player1,
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
             right: CellState::Neutral,
         };
         game.player1.rules.push(rule1);
 
-        let rule1_alt = Rule {
-            top: CellState::Player1,
-            inner: CellState::Neutral,
-            right: CellState::Neutral,
-        };
-        game.player1.rules.push(rule1_alt);
-
-        // Player 2: Different spreading pattern
+        // Player 2: Different spreading pattern towards right
         let rule2 = Rule {
             top: CellState::Neutral,
-            inner: CellState::Player2,
-            right: CellState::Neutral,
-        };
-        game.player2.rules.push(rule2);
-
-        let rule2_alt = Rule {
-            top: CellState::Neutral,
-            inner: CellState::Neutral,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
             right: CellState::Player2,
         };
-        game.player2.rules.push(rule2_alt);
+        game.player2.rules.push(rule2);
 
         // Add some initial player cells in different locations for visibility
         for i in 0..10 {
@@ -235,9 +223,10 @@ impl GameUI {
     }
 
     fn update_game(&mut self) {
-        // Update both players' grids
-        self.game.next_p1();
-        self.game.next_p2();
+        // Update the grid with the rules of each player
+        self.game
+            .grid
+            .next(&self.game.player1.rules, &self.game.player2.rules);
     }
 }
 
