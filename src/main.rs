@@ -141,6 +141,9 @@ impl GameUI {
         self.game
             .grid
             .next(&self.game.player1.rules, &self.game.player2.rules);
+
+        // Advance the iteration counter
+        self.game.advance_iteration();
     }
 }
 
