@@ -160,7 +160,7 @@ impl Game {
             ui.scope(|ui| {
                 ui.set_min_width(grid_section_width);
                 ui.set_max_width(grid_section_width);
-                ui.vertical(|ui| {
+                ui.vertical_centered(|ui| {
                     let iter_text = if self.round_over {
                         format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
                     } else {

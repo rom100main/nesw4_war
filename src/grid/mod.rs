@@ -91,8 +91,8 @@ impl Grid {
         let grid_width_px = self.width as f32 * cell_size;
         let grid_height_px = self.height as f32 * cell_size;
 
-        let x_pos = available_rect.min.x + padding;
-        let y_pos = available_rect.min.y + padding;
+        let x_pos = available_rect.min.x + (available_rect.width() - grid_width_px) / 2.0;
+        let y_pos = available_rect.min.y;
 
         let painter_rect = egui::Rect::from_min_size(
             egui::pos2(x_pos, y_pos),
