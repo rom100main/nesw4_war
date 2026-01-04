@@ -136,30 +136,53 @@ impl Game {
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
 
-        ui.columns(3, |columns| {
-            columns[0].vertical(|ui| {
-                ui.heading("Player 1");
-                self.player1.show(ui, p1_count);
+        let available_rect = ui.available_rect_before_wrap();
+
+        if available_rect.width().is_nan() || available_rect.width() <= 0.0 {
+            return;
+        }
+
+        let total_width = available_rect.width();
+        let p1_section_width = total_width / 5.0;
+        let grid_section_width = total_width * 3.0 / 5.0;
+        let p2_section_width = total_width / 5.0;
+
+        ui.horizontal(|ui| {
+            ui.scope(|ui| {
+                ui.set_min_width(p1_section_width);
+                ui.set_max_width(p1_section_width);
+                ui.vertical(|ui| {
+                    ui.heading("Player 1");
+                    self.player1.show(ui, p1_count);
+                });
             });
 
-            columns[1].vertical(|ui| {
-                let iter_text = if self.round_over {
-                    format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
-                } else {
-                    format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
-                };
-                ui.heading(iter_text);
-                self.grid.show(ui);
+            ui.scope(|ui| {
+                ui.set_min_width(grid_section_width);
+                ui.set_max_width(grid_section_width);
+                ui.vertical(|ui| {
+                    let iter_text = if self.round_over {
+                        format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
+                    } else {
+                        format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
+                    };
+                    ui.heading(iter_text);
+                    self.grid.show(ui);
 
-                if let Some(ref result) = self.round_result {
-                    ui.add_space(10.0);
-                    ui.heading(result);
-                }
+                    if let Some(ref result) = self.round_result {
+                        ui.add_space(10.0);
+                        ui.heading(result);
+                    }
+                });
             });
 
-            columns[2].vertical(|ui| {
-                ui.heading("Player 2");
-                self.player2.show(ui, p2_count);
+            ui.scope(|ui| {
+                ui.set_min_width(p2_section_width);
+                ui.set_max_width(p2_section_width);
+                ui.vertical(|ui| {
+                    ui.heading("Player 2");
+                    self.player2.show(ui, p2_count);
+                });
             });
         });
     }

@@ -79,6 +79,10 @@ impl Grid {
         let max_width = available_rect.width() - padding * 2.0;
         let max_height = available_rect.height() - padding * 2.0;
 
+        if max_width.is_nan() || max_height.is_nan() || max_width <= 0.0 || max_height <= 0.0 {
+            return;
+        }
+
         let cell_size_w = max_width / self.width as f32;
         let cell_size_h = max_height / self.height as f32;
         let cell_size = cell_size_w.min(cell_size_h).min(50.0);
