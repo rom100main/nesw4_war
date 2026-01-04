@@ -140,7 +140,7 @@ impl Grid {
 
         painter.rect_stroke(
             painter_rect,
-            2.0,
+            0.0,
             egui::Stroke::new(2.0, egui::Color32::BLACK),
             egui::StrokeKind::Inside,
         );
