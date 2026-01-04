@@ -28,33 +28,72 @@ impl Default for GameUI {
         let mut game = Game::new();
         game.new_round();
 
+        // Add more effective rules for both players to demonstrate grid evolution
+        // Player 1: Spread towards bottom
         let rule1 = Rule {
-            top: CellState::Neutral,
-            inner: CellState::Player1,
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
             right: CellState::Neutral,
         };
         game.player1.rules.push(rule1);
 
-        let rule1_alt = Rule {
+        let rule1 = Rule {
             top: CellState::Player1,
-            inner: CellState::Neutral,
+            bottom: CellState::Neutral,
+            left: CellState::Player1,
             right: CellState::Neutral,
         };
-        game.player1.rules.push(rule1_alt);
+        game.player1.rules.push(rule1);
 
+        let rule1 = Rule {
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
+            right: CellState::Player1,
+        };
+        game.player1.rules.push(rule1);
+
+        let rule1 = Rule {
+            top: CellState::Player1,
+            bottom: CellState::Neutral,
+            left: CellState::Player1,
+            right: CellState::Player1,
+        };
+        game.player1.rules.push(rule1);
+
+        // Player 2: Different spreading pattern towards right
         let rule2 = Rule {
             top: CellState::Neutral,
-            inner: CellState::Player2,
-            right: CellState::Neutral,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
+            right: CellState::Player2,
         };
         game.player2.rules.push(rule2);
 
-        let rule2_alt = Rule {
-            top: CellState::Neutral,
-            inner: CellState::Neutral,
+        let rule2 = Rule {
+            top: CellState::Player2,
+            bottom: CellState::Neutral,
+            left: CellState::Neutral,
             right: CellState::Player2,
         };
-        game.player2.rules.push(rule2_alt);
+        game.player2.rules.push(rule2);
+
+        let rule2 = Rule {
+            top: CellState::Neutral,
+            bottom: CellState::Player2,
+            left: CellState::Neutral,
+            right: CellState::Player2,
+        };
+        game.player2.rules.push(rule2);
+
+        let rule2 = Rule {
+            top: CellState::Player2,
+            bottom: CellState::Player2,
+            left: CellState::Neutral,
+            right: CellState::Player2,
+        };
+        game.player2.rules.push(rule2);
 
         for i in 0..10 {
             let idx = i * game.grid.width + 10 + i;
@@ -98,12 +137,10 @@ impl eframe::App for GameUI {
 
 impl GameUI {
     fn update_game(&mut self) {
-        if self.game.round_over {
-            return;
-        }
-        self.game.next_p1();
-        self.game.next_p2();
-        self.game.advance_iteration();
+        // Update the grid with the rules of each player
+        self.game
+            .grid
+            .next(&self.game.player1.rules, &self.game.player2.rules);
     }
 }
 

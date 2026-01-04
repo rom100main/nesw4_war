@@ -3,7 +3,8 @@ use crate::types::CellState;
 #[derive(PartialEq)]
 pub struct Rule {
     pub top: CellState,
-    pub inner: CellState,
+    pub bottom: CellState,
+    pub left: CellState,
     pub right: CellState,
 }
 
@@ -17,7 +18,12 @@ impl Rule {
                 1 => CellState::Player1,
                 _ => CellState::Player2,
             },
-            inner: match rng.gen_range(0..3) {
+            bottom: match rng.gen_range(0..3) {
+                0 => CellState::Neutral,
+                1 => CellState::Player1,
+                _ => CellState::Player2,
+            },
+            left: match rng.gen_range(0..3) {
                 0 => CellState::Neutral,
                 1 => CellState::Player1,
                 _ => CellState::Player2,
@@ -30,8 +36,20 @@ impl Rule {
         }
     }
 
-    pub fn next(&self, top: CellState, inner: CellState, right: CellState) -> bool {
-        *self == Rule { top, inner, right }
+    pub fn next(
+        &self,
+        top: CellState,
+        bottom: CellState,
+        left: CellState,
+        right: CellState,
+    ) -> bool {
+        *self
+            == Rule {
+                top,
+                bottom,
+                left,
+                right,
+            }
     }
 }
 
@@ -44,19 +62,31 @@ mod tests {
     fn test_rule_next_true() {
         let rule = Rule {
             top: CellState::Player1,
-            inner: CellState::Player2,
+            bottom: CellState::Player2,
+            left: CellState::Player1,
             right: CellState::Neutral,
         };
-        assert!(rule.next(CellState::Player1, CellState::Player2, CellState::Neutral));
+        assert!(rule.next(
+            CellState::Player1,
+            CellState::Player2,
+            CellState::Player1,
+            CellState::Neutral
+        ));
     }
 
     #[test]
     fn test_rule_next_false() {
         let rule = Rule {
             top: CellState::Player1,
-            inner: CellState::Player2,
+            bottom: CellState::Player2,
+            left: CellState::Player1,
             right: CellState::Neutral,
         };
-        assert!(!rule.next(CellState::Player2, CellState::Player2, CellState::Neutral));
+        assert!(!rule.next(
+            CellState::Player2,
+            CellState::Player2,
+            CellState::Player1,
+            CellState::Neutral
+        ));
     }
 }

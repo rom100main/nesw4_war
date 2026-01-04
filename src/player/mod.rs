@@ -1,12 +1,11 @@
-use crate::constants::{PLAYER_MAX_RULES, PLAYER_START_MONEY};
+use crate::constants::{PLAYER_MAX_RULES, PLAYER_SPAWN_PROBA, PLAYER_START_MONEY};
 use crate::rule::Rule;
-use crate::types::Pos;
 use eframe::egui;
 
 pub struct Player {
     pub rules: Vec<Rule>,
     pub max_rules: usize,
-    pub spawn: Vec<Pos>,
+    pub spawn_proba: f32, // spawn probability
     pub money: usize,
     pub win: usize,
 }
@@ -16,20 +15,7 @@ impl Player {
         Player {
             rules: Vec::new(),
             max_rules: PLAYER_MAX_RULES,
-            spawn: vec![Pos { x: 0, y: 0 }],
-            money: PLAYER_START_MONEY,
-            win: 0,
-        }
-    }
-
-    pub fn new_p2(size_grid: usize) -> Player {
-        Player {
-            rules: Vec::new(),
-            max_rules: PLAYER_MAX_RULES,
-            spawn: vec![Pos {
-                x: size_grid - 1,
-                y: size_grid - 1,
-            }],
+            spawn_proba: PLAYER_SPAWN_PROBA,
             money: PLAYER_START_MONEY,
             win: 0,
         }
@@ -45,11 +31,12 @@ impl Player {
         ui.label("Rules:");
         for (i, rule) in self.rules.iter().enumerate() {
             ui.label(format!(
-                "{}. {} | {} | {}",
+                "{}. {} | {} | {} | {}",
                 i + 1,
                 rule.top,
-                rule.inner,
-                rule.right
+                rule.right,
+                rule.bottom,
+                rule.left
             ));
         }
     }

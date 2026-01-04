@@ -1,4 +1,4 @@
-use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_MONEY};
+use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_MONEY, PLAYER_SPAWN_PROBA};
 use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
@@ -21,8 +21,8 @@ impl Game {
         let size_grid = GRID_SIZE;
         Game {
             player1: Player::new(),
-            player2: Player::new_p2(size_grid),
-            grid: Grid::new(size_grid),
+            player2: Player::new(),
+            grid: Grid::new(size_grid, PLAYER_SPAWN_PROBA, PLAYER_SPAWN_PROBA),
             size_grid,
             shop: Shop::new(),
             iteration: 0,
@@ -41,28 +41,8 @@ impl Game {
         self.round_result = None;
     }
 
-    fn new_grid(&mut self) {
-        self.grid = Grid::new(self.size_grid);
-        for spawn in &self.player1.spawn {
-            let idx = spawn.y * self.size_grid + spawn.x;
-            self.grid.values[idx] = CellState::Player1;
-        }
-        for spawn in &self.player2.spawn {
-            let idx = spawn.y * self.size_grid + spawn.x;
-            self.grid.values[idx] = CellState::Player2;
-        }
-    }
-
     fn new_shop(&mut self) {
         self.shop = Shop::new();
-    }
-
-    pub fn next_p1(&mut self) {
-        self.grid.next(CellState::Player1, &self.player1.rules);
-    }
-
-    pub fn next_p2(&mut self) {
-        self.grid.next(CellState::Player2, &self.player2.rules);
     }
 
     pub fn advance_iteration(&mut self) {
@@ -185,5 +165,13 @@ impl Game {
                 });
             });
         });
+    }
+
+    fn new_grid(&mut self) {
+        self.grid = Grid::new(
+            self.size_grid,
+            self.player1.spawn_proba,
+            self.player2.spawn_proba,
+        );
     }
 }

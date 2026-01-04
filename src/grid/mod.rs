@@ -2,6 +2,9 @@ use crate::rule::Rule;
 use crate::types::CellState;
 use eframe::egui;
 
+/// Coordinates:
+/// x from left (0) to right (width - 1)
+/// y from top (0) to bottom (height - 1)
 pub struct Grid {
     pub width: usize,
     pub height: usize,
@@ -11,11 +14,29 @@ pub struct Grid {
 }
 
 impl Grid {
-    pub fn new(size: usize) -> Grid {
+    /// Create a new grid. \
+    /// `pX_spawn_p` is the spawn probability of the player X. \
+    /// `p1_spawn_p + p2_spawn_p` should be smaller than 1.0.
+    pub fn new(size: usize, p1_spawn_p: f32, p2_spawn_p: f32) -> Grid {
         Grid {
             width: size,
             height: size,
-            values: vec![CellState::Neutral; size * size],
+            values: {
+                use rand::Rng;
+                let mut values: Vec<CellState> = vec![];
+                for _ in 0..size * size {
+                    let mut rng = rand::thread_rng();
+                    let x: f32 = rng.r#gen();
+                    if x <= p1_spawn_p {
+                        values.push(CellState::Player1);
+                    } else if x <= p1_spawn_p + p2_spawn_p {
+                        values.push(CellState::Player2);
+                    } else {
+                        values.push(CellState::Neutral);
+                    }
+                }
+                values
+            },
             toric: true,
             show_grid_lines: true,
         }
@@ -25,45 +46,58 @@ impl Grid {
         self.values.iter().filter(|v| **v == value).count()
     }
 
-    pub fn next(&mut self, state: CellState, rules: &Vec<Rule>) {
+    /// Change grid state by applying all the rules of the players.
+    /// `rules_p1` and `rules_p2` should not have any rule in common.
+    pub fn next(&mut self, rules_p1: &Vec<Rule>, rules_p2: &Vec<Rule>) {
         let mut new_values = self.values.clone();
 
         for y in 0..self.height {
-            for x in 0..self.width {
-                if self.values[y * self.width + x] == state {
-                    continue;
-                }
+            'cell: for x in 0..self.width {
+                let current_idx = self.get_idx(x, y);
 
-                let current_idx = y * self.width + x;
-                let current_state = self.values[current_idx];
-
-                // TODO(Clément): check if player 2 in this case reverse rul
-
-                // Get the cell states for checking rules
-                // top: cell above
-                // inner: current cell
-                // right: cell to the right
-                let (top_idx, right_idx) = if self.toric {
+                // Get the cell states for checking rules.
+                // top, bottom, left, right refer to the cells relative to the current cell
+                let (top_idx, bottom_idx, left_idx, right_idx) = if self.toric {
                     // Toroidal - wrap around
                     let top_y = if y == 0 { self.height - 1 } else { y - 1 };
+                    let bottom_y = if y == self.height - 1 { 0 } else { y + 1 };
+                    let left_x = if x == 0 { self.width - 1 } else { x - 1 };
                     let right_x = if x == self.width - 1 { 0 } else { x + 1 };
-                    (top_y * self.width + x, y * self.width + right_x)
+                    (
+                        self.get_idx(x, top_y),
+                        self.get_idx(x, bottom_y),
+                        self.get_idx(left_x, y),
+                        self.get_idx(right_x, y),
+                    )
                 } else {
                     // Non-toroidal - out of bounds
-                    if y == 0 || x == self.width - 1 {
+                    if y == 0 || y == self.height - 1 || x == 0 || x == self.width - 1 {
                         continue;
                     }
-                    ((y - 1) * self.width + x, y * self.width + (x + 1))
+                    (
+                        self.get_idx(x, y - 1),
+                        self.get_idx(x, y + 1),
+                        self.get_idx(x - 1, y),
+                        self.get_idx(x + 1, y),
+                    )
                 };
 
                 let top_state = self.values[top_idx];
+                let bottom_state = self.values[bottom_idx];
+                let left_state = self.values[left_idx];
                 let right_state = self.values[right_idx];
 
                 // Check if any rule matches
-                for rule in rules {
-                    if rule.next(top_state, current_state, right_state) {
-                        new_values[current_idx] = state;
-                        continue;
+                for rule in rules_p1 {
+                    if rule.next(top_state, bottom_state, left_state, right_state) {
+                        new_values[current_idx] = CellState::Player1;
+                        continue 'cell;
+                    }
+                }
+                for rule in rules_p2 {
+                    if rule.next(top_state, bottom_state, left_state, right_state) {
+                        new_values[current_idx] = CellState::Player2;
+                        continue 'cell;
                     }
                 }
             }
@@ -144,5 +178,9 @@ impl Grid {
             egui::Stroke::new(2.0, egui::Color32::BLACK),
             egui::StrokeKind::Inside,
         );
+    }
+    fn get_idx(&self, x: usize, y: usize) -> usize {
+        // TODO: return correct if toroidal or error if out of bounds
+        y * self.width + x
     }
 }
