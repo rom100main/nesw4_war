@@ -2,6 +2,7 @@ use eframe::egui::Color32;
 
 pub const PLAYER_MAX_RULES: usize = 5;
 pub const PLAYER_START_MONEY: usize = 5;
+pub const PLAYER_ADD_MOENY: usize = 2;
 pub const PLAYER_MONEY: usize = 3;
 pub const PLAYER_SPAWN_PROBA: f32 = 0.01;
 
