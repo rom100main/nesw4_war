@@ -23,6 +23,7 @@ pub enum Page {
     LandingScreen,
     InitialRulePicker,
     MainGame,
+    Shop,
     EndScreen,
 }
 
@@ -32,6 +33,9 @@ struct GameUI {
     update_interval: Duration,
     current_page: Page,
     rule_picker: RulePicker,
+    shop_current_player: u8,
+    shop_first_player: u8,
+    shop_bought_rules: Vec<bool>,
 }
 
 impl Default for GameUI {
@@ -123,6 +127,9 @@ impl Default for GameUI {
             update_interval: Duration::from_millis(100),
             current_page: Page::InitialRulePicker,
             rule_picker: RulePicker::new(),
+            shop_current_player: 1,
+            shop_first_player: 1,
+            shop_bought_rules: vec![false; SHOP_NB_RULES],
         }
     }
 }
@@ -145,15 +152,16 @@ impl eframe::App for GameUI {
 
                 ctx.request_repaint_after(Duration::from_millis(100));
 
-                let mut new_round_clicked = false;
                 egui::CentralPanel::default().show(ctx, |ui| {
                     self.game
-                        .show(ui, &mut new_round_clicked, &mut self.update_interval);
+                        .show(ui, &mut self.update_interval, &mut self.current_page);
                 });
-
-                if new_round_clicked {
-                    self.game.new_round();
-                }
+            }
+            Page::Shop => {
+                ctx.request_repaint_after(Duration::from_millis(100));
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    self.shop_page(ui);
+                });
             }
             Page::EndScreen => todo!(),
         }
@@ -169,6 +177,92 @@ impl GameUI {
 
         // Advance the iteration counter
         self.game.advance_iteration();
+    }
+
+    fn shop_page(&mut self, ui: &mut egui::Ui) {
+        let player_color = if self.shop_current_player == 1 {
+            COLOR_PLAYER1
+        } else {
+            COLOR_PLAYER2
+        };
+        let player_name = format!("Player {} Shopping", self.shop_current_player);
+        ui.heading(
+            egui::RichText::new(player_name)
+                .color(player_color)
+                .strong(),
+        );
+
+        ui.add_space(10.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        let player = if self.shop_current_player == 1 {
+            &mut self.game.player1
+        } else {
+            &mut self.game.player2
+        };
+
+        ui.label(format!("Money: {}", player.money));
+        ui.add_space(10.0);
+
+        ui.heading("Rules");
+        for i in 0..SHOP_NB_RULES {
+            if !self.shop_bought_rules[i] {
+                ui.horizontal(|ui| {
+                    self.game.shop.rules[i].show(ui, i + 1);
+                    ui.add_space(10.0);
+
+                    let can_buy =
+                        player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
+
+                    if can_buy {
+                        if ui.button(format!("Buy (${})", SHOP_PRICE_RULE)).clicked() {
+                            if self.game.shop.buy_rule(player, i).is_ok() {
+                                self.shop_bought_rules[i] = true;
+                            }
+                        }
+                    } else {
+                        ui.label(format!("Buy (${}) - Can't afford or full", SHOP_PRICE_RULE));
+                    }
+                });
+                ui.add_space(5.0);
+            }
+        }
+
+        ui.add_space(10.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        ui.heading("Spawn Probability");
+        ui.label(format!("Current: {:.2}", player.spawn_proba));
+
+        let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
+        if can_buy_spawn {
+            if ui
+                .button(format!("Upgrade Spawn (+${})", SHOP_PRICE_SPAWN))
+                .clicked()
+            {
+                let _ = self.game.shop.buy_spawn(player);
+            }
+        } else {
+            ui.label(format!(
+                "Upgrade Spawn (+${}) - Can't afford",
+                SHOP_PRICE_SPAWN
+            ));
+        }
+
+        ui.add_space(20.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        if ui.button("Finish").clicked() {
+            self.shop_current_player = if self.shop_current_player == 1 { 2 } else { 1 };
+
+            if self.shop_current_player == self.shop_first_player {
+                self.game.new_round();
+                self.current_page = Page::MainGame;
+            }
+        }
     }
 }
 

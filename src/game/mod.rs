@@ -14,6 +14,7 @@ pub struct Game {
     pub iteration: usize,
     pub round_over: bool,
     pub round_result: Option<String>,
+    pub shop_first_player: u8,
 }
 
 impl Game {
@@ -28,6 +29,7 @@ impl Game {
             iteration: 0,
             round_over: false,
             round_result: None,
+            shop_first_player: 1,
         }
     }
 
@@ -74,14 +76,24 @@ impl Game {
     pub fn show(
         &mut self,
         ui: &mut egui::Ui,
-        new_round_clicked: &mut bool,
         update_interval: &mut std::time::Duration,
+        current_page: &mut super::Page,
     ) {
         ui.heading("ToomWar Grid Game");
 
         ui.horizontal(|ui| {
-            if ui.button("New Round").clicked() {
-                *new_round_clicked = true;
+            if self.round_over {
+                if ui.button("Shop").clicked() {
+                    let p1_count = self.grid.count(CellState::Player1);
+                    let p2_count = self.grid.count(CellState::Player2);
+
+                    if p1_count > p2_count {
+                        self.shop_first_player = 2;
+                    } else {
+                        self.shop_first_player = 1;
+                    }
+                    *current_page = super::Page::Shop;
+                }
             }
 
             ui.checkbox(&mut self.grid.show_grid_lines, "Show Grid Lines");
