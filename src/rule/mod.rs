@@ -67,15 +67,10 @@ impl Rule {
         let painter = ui.painter();
 
         let cells = [
-            (0, 0, CellState::Neutral),
             (1, 0, self.top),
-            (2, 0, CellState::Neutral),
             (0, 1, self.left),
-            (1, 1, CellState::Neutral),
             (2, 1, self.right),
-            (0, 2, CellState::Neutral),
             (1, 2, self.bottom),
-            (2, 2, CellState::Neutral),
         ];
 
         for (col, row, cell_state) in cells {
@@ -105,15 +100,9 @@ impl Rule {
             );
         }
 
-        let grid_rect = egui::Rect::from_min_size(
+        egui::Rect::from_min_size(
             egui::pos2(x_offset, y_offset),
             egui::vec2(grid_size, grid_size),
-        );
-        painter.rect_stroke(
-            grid_rect,
-            0.0,
-            egui::Stroke::new(1.0, egui::Color32::BLACK),
-            egui::StrokeKind::Inside,
         );
 
         ui.allocate_space(egui::vec2(grid_size, grid_size));
