@@ -35,7 +35,7 @@ impl RulePicker {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
+        ui.heading(egui::RichText::new("NESW4: New Extreme Strategical Warfare 4").size(24.0));
         ui.add_space(20.0);
 
         ui.vertical_centered(|ui| {

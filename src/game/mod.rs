@@ -82,7 +82,7 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
-        ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
+        ui.heading(egui::RichText::new("NESW4: New Extreme Strategical Warfare 4").size(24.0));
         ui.add_space(20.0);
 
         let p1_count = self.grid.count(CellState::Player1);

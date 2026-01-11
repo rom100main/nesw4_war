@@ -211,12 +211,13 @@ impl GameUI {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_title("New Extreme Strategical Warfare"),
+        viewport: egui::ViewportBuilder::default()
+            .with_title("NESW4: New Extreme Strategical Warfare 4"),
         ..Default::default()
     };
 
     Ok(eframe::run_native(
-        "New Extreme Strategical Warfare",
+        "NESW4: New Extreme Strategical Warfare 4",
         options,
         Box::new(|_cc| Ok(Box::<GameUI>::default())),
     )?)
