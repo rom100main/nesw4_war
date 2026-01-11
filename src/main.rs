@@ -14,9 +14,11 @@ pub use player::Player;
 pub use rule::Rule;
 pub use rule_picker::RulePicker;
 pub use shop::Shop;
+pub use types::CellState;
 pub use types::*;
 
 use eframe::egui;
+use rand::Rng;
 use std::time::{Duration, Instant};
 
 pub use constants::SHOP_NB_RULES;
@@ -40,11 +42,73 @@ impl Default for GameUI {
     fn default() -> Self {
         let mut game = Game::new();
         game.new_round();
+
+        let mut rng = rand::thread_rng();
+        let pattern: usize = rng.gen_range(0..4);
+        let rule_for_player1 = match pattern {
+            0 => Rule {
+                top: CellState::Player1,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            1 => Rule {
+                top: CellState::Neutral,
+                right: CellState::Player1,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            2 => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: CellState::Player1,
+                left: CellState::Neutral,
+            },
+            _ => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: CellState::Player1,
+            },
+        };
+        game.player1.rules.push(rule_for_player1);
+
+        let pattern2: usize = rng.gen_range(0..4);
+        let rule_for_player2 = match pattern2 {
+            0 => Rule {
+                top: CellState::Player2,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            1 => Rule {
+                top: CellState::Neutral,
+                right: CellState::Player2,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            2 => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: CellState::Player2,
+                left: CellState::Neutral,
+            },
+            _ => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: CellState::Player2,
+            },
+        };
+        game.player2.rules.push(rule_for_player2);
+
+        let rule_picker = RulePicker::new_with_players(&game.player1, &game.player2);
+
         Self {
             game,
             last_update: Instant::now(),
             current_page: Page::InitialRulePicker,
-            rule_picker: RulePicker::new(),
+            rule_picker,
         }
     }
 }
