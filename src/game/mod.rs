@@ -105,7 +105,7 @@ impl Game {
             available_rect.max,
         );
 
-        ui.allocate_ui_at_rect(game_rect, |ui| {
+        ui.scope_builder(egui::UiBuilder::new().max_rect(game_rect), |ui| {
             ui.horizontal(|ui| {
                 ui.scope(|ui| {
                     ui.set_min_width(p1_section_width);
@@ -152,7 +152,7 @@ impl Game {
             });
         });
 
-        ui.allocate_ui_at_rect(bar_rect, |ui| {
+        ui.scope_builder(egui::UiBuilder::new().max_rect(bar_rect), |ui| {
             let neutral_count = self.grid.count(CellState::Neutral);
             let total_cells = (p1_count + p2_count + neutral_count) as f32;
 
