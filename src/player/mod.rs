@@ -1,3 +1,4 @@
+use crate::CELL_SIZE;
 use crate::constants::{PLAYER_MAX_RULES, PLAYER_SPAWN_PROBA, PLAYER_START_MONEY};
 use crate::rule::Rule;
 use eframe::egui;
@@ -37,10 +38,11 @@ impl Player {
         ui.add_space(5.0);
         egui::Grid::new(format!("rules_grid {}", self.name))
             .num_columns(2)
+            .max_col_width(CELL_SIZE * 3.0)
             .spacing([10.0, 10.0])
             .show(ui, |ui| {
                 for (i, rule) in self.rules.iter().enumerate() {
-                    ui.vertical(|ui| {
+                    ui.vertical_centered(|ui| {
                         rule.show(ui, i + 1);
                     });
                     if (i + 1) % 2 == 0 {
