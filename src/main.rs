@@ -40,26 +40,6 @@ impl Default for GameUI {
     fn default() -> Self {
         let mut game = Game::new();
         game.new_round();
-
-        // Add more effective rules for both players to demonstrate grid evolution
-        // Player 1: Spread towards bottom
-        let rule1 = Rule {
-            top: CellState::Player1,
-            bottom: CellState::Neutral,
-            left: CellState::Neutral,
-            right: CellState::Neutral,
-        };
-        game.player1.rules.push(rule1);
-
-        // Player 2: Different spreading pattern towards right
-        let rule2 = Rule {
-            top: CellState::Neutral,
-            bottom: CellState::Neutral,
-            left: CellState::Neutral,
-            right: CellState::Player2,
-        };
-        game.player2.rules.push(rule2);
-
         Self {
             game,
             last_update: Instant::now(),
@@ -73,11 +53,25 @@ impl eframe::App for GameUI {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         match &self.current_page {
             Page::LandingScreen => todo!(),
+
             Page::InitialRulePicker => {
+                let player = if self.rule_picker.player1_choosing {
+                    &mut self.game.player1
+                } else {
+                    &mut self.game.player2
+                };
+
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    self.rule_picker.show(ui, &mut self.current_page);
+                    self.rule_picker.show(ui, player);
                 });
+
+                if self.game.player1.rules.len() == PLAYER_START_RULES
+                    && self.game.player2.rules.len() == PLAYER_START_RULES
+                {
+                    self.current_page = Page::MainGame;
+                }
             }
+
             Page::MainGame => {
                 if self.last_update.elapsed()
                     >= Duration::from_millis(constants::UPDATE_INTERVAL_MS)
@@ -130,6 +124,7 @@ impl eframe::App for GameUI {
                     }
                 });
             }
+
             Page::EndScreen => todo!(),
         }
     }
