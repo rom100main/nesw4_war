@@ -78,12 +78,7 @@ impl Game {
         }
     }
 
-    pub fn show(
-        &mut self,
-        ui: &mut egui::Ui,
-        update_interval: &mut std::time::Duration,
-        shop_clicked: &mut bool,
-    ) {
+    pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
         ui.heading("ToomWar Grid Game");
 
         ui.horizontal(|ui| {
@@ -92,34 +87,6 @@ impl Game {
                     *shop_clicked = true;
                 }
             }
-
-            ui.checkbox(&mut self.grid.show_grid_lines, "Show Grid Lines");
-
-            ui.label("Update Speed:");
-            egui::ComboBox::from_label("")
-                .selected_text(format!("{}ms", update_interval.as_millis()))
-                .show_ui(ui, |ui| {
-                    ui.selectable_value(
-                        update_interval,
-                        std::time::Duration::from_millis(100),
-                        "100ms",
-                    );
-                    ui.selectable_value(
-                        update_interval,
-                        std::time::Duration::from_millis(200),
-                        "200ms",
-                    );
-                    ui.selectable_value(
-                        update_interval,
-                        std::time::Duration::from_millis(300),
-                        "300ms",
-                    );
-                    ui.selectable_value(
-                        update_interval,
-                        std::time::Duration::from_millis(500),
-                        "500ms",
-                    );
-                });
         });
 
         let p1_count = self.grid.count(CellState::Player1);

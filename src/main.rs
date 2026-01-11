@@ -32,7 +32,6 @@ pub enum Page {
 struct GameUI {
     game: Game,
     last_update: Instant,
-    update_interval: Duration,
     current_page: Page,
     rule_picker: RulePicker,
 }
@@ -123,7 +122,6 @@ impl Default for GameUI {
         Self {
             game,
             last_update: Instant::now(),
-            update_interval: Duration::from_millis(100),
             current_page: Page::InitialRulePicker,
             rule_picker: RulePicker::new(),
         }
@@ -136,12 +134,14 @@ impl eframe::App for GameUI {
             Page::LandingScreen => todo!(),
             Page::InitialRulePicker => {
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    self.rule_picker
-                        .show(ui, &mut self.update_interval, &mut self.current_page);
+                    self.rule_picker.show(ui, &mut self.current_page);
                 });
             }
             Page::MainGame => {
-                if self.last_update.elapsed() >= self.update_interval && !self.game.round_over {
+                if self.last_update.elapsed()
+                    >= Duration::from_millis(constants::UPDATE_INTERVAL_MS)
+                    && !self.game.round_over
+                {
                     self.update_game();
                     self.last_update = Instant::now();
                 }
@@ -150,8 +150,7 @@ impl eframe::App for GameUI {
 
                 let mut shop_clicked = false;
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    self.game
-                        .show(ui, &mut self.update_interval, &mut shop_clicked);
+                    self.game.show(ui, &mut shop_clicked);
                 });
 
                 if shop_clicked {

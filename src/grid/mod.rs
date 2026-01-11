@@ -11,7 +11,6 @@ pub struct Grid {
     pub height: usize,
     pub values: Vec<CellState>,
     pub toric: bool,
-    pub show_grid_lines: bool,
 }
 
 impl Grid {
@@ -39,7 +38,6 @@ impl Grid {
                 values
             },
             toric: true,
-            show_grid_lines: true,
         }
     }
 
@@ -162,14 +160,12 @@ impl Grid {
                     }
                 }
 
-                if self.show_grid_lines {
-                    painter.rect_stroke(
-                        cell_rect,
-                        0.0,
-                        egui::Stroke::new(0.5, COLOR_GRID_LINE),
-                        egui::StrokeKind::Inside,
-                    );
-                }
+                painter.rect_stroke(
+                    cell_rect,
+                    0.0,
+                    egui::Stroke::new(0.5, COLOR_GRID_LINE),
+                    egui::StrokeKind::Inside,
+                );
             }
         }
 

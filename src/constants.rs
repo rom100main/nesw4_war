@@ -13,6 +13,7 @@ pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.01;
 
 pub const GRID_SIZE: usize = 50;
 pub const MAX_ITERATIONS: usize = 50;
+pub const UPDATE_INTERVAL_MS: u64 = 100;
 
 pub const COLOR_NEUTRAL: Color32 = Color32::from_gray(200);
 pub const COLOR_PLAYER1: Color32 = Color32::from_rgb(255, 100, 100);
