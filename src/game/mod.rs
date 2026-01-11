@@ -80,14 +80,6 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
-        ui.horizontal(|ui| {
-            if self.round_over {
-                if ui.button("Shop").clicked() {
-                    *shop_clicked = true;
-                }
-            }
-        });
-
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
 
@@ -127,6 +119,12 @@ impl Game {
                     if let Some(ref result) = self.round_result {
                         ui.add_space(10.0);
                         ui.heading(result);
+                    }
+
+                    if self.round_over {
+                        if ui.button("Shop").clicked() {
+                            *shop_clicked = true;
+                        }
                     }
                 });
             });
