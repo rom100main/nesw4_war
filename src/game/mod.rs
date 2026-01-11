@@ -1,4 +1,5 @@
-use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_MONEY, PLAYER_SPAWN_PROBA};
+use crate::PLAYER_ADD_MONEY;
+use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA};
 use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
@@ -39,8 +40,8 @@ impl Game {
     pub fn new_round(&mut self) {
         self.new_grid();
         self.new_shop();
-        self.player1.money = PLAYER_MONEY;
-        self.player2.money = PLAYER_MONEY;
+        self.player1.money += PLAYER_ADD_MONEY;
+        self.player2.money += PLAYER_ADD_MONEY;
         self.iteration = 0;
         self.round_over = false;
         self.round_result = None;
