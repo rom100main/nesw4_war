@@ -35,7 +35,7 @@ impl Game {
             iteration: 0,
             round_over: false,
             round_result: None,
-            shop_first_player: if rand::random() { 1 } else { 2 },
+            shop_first_player: 1,
         }
     }
 
