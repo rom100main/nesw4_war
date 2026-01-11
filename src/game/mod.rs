@@ -1,5 +1,7 @@
 use crate::PLAYER_ADD_MONEY;
-use crate::constants::{GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA};
+use crate::constants::{
+    COLOR_PLAYER1, COLOR_PLAYER2, GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA,
+};
 use crate::grid::Grid;
 use crate::player::Player;
 use crate::shop::Shop;
@@ -99,7 +101,7 @@ impl Game {
                 ui.set_min_width(p1_section_width);
                 ui.set_max_width(p1_section_width);
                 ui.vertical(|ui| {
-                    ui.heading("Player 1");
+                    ui.heading(egui::RichText::new("Player 1").color(COLOR_PLAYER1));
                     self.player1.show(ui, p1_count);
                 });
             });
@@ -133,7 +135,7 @@ impl Game {
                 ui.set_min_width(p2_section_width);
                 ui.set_max_width(p2_section_width);
                 ui.vertical(|ui| {
-                    ui.heading("Player 2");
+                    ui.heading(egui::RichText::new("Player 2").color(COLOR_PLAYER2));
                     self.player2.show(ui, p2_count);
                 });
             });
