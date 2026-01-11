@@ -1,4 +1,5 @@
 use crate::types::CellState;
+use eframe::egui;
 
 #[derive(PartialEq)]
 pub struct Rule {
@@ -53,10 +54,68 @@ impl Rule {
     }
 
     pub fn show(&self, ui: &mut ::eframe::egui::Ui, index: usize) {
-        ui.label(format!(
-            "{}. {} | {} | {} | {}",
-            index, self.top, self.right, self.bottom, self.left
-        ));
+        let cell_size = 15.0;
+        let grid_size = cell_size * 3.0;
+
+        ui.label(format!("Rule {}", index));
+
+        let cursor = ui.cursor();
+        let x_offset = cursor.min.x;
+        let y_offset = cursor.min.y;
+
+        let painter = ui.painter();
+
+        let cells = [
+            (0, 0, CellState::Neutral),
+            (1, 0, self.top),
+            (2, 0, CellState::Neutral),
+            (0, 1, self.left),
+            (1, 1, CellState::Neutral),
+            (2, 1, self.right),
+            (0, 2, CellState::Neutral),
+            (1, 2, self.bottom),
+            (2, 2, CellState::Neutral),
+        ];
+
+        for (col, row, cell_state) in cells {
+            let x = x_offset + col as f32 * cell_size;
+            let y = y_offset + row as f32 * cell_size;
+
+            let cell_rect =
+                egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(cell_size, cell_size));
+
+            match cell_state {
+                CellState::Neutral => {
+                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_gray(200));
+                }
+                CellState::Player1 => {
+                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_rgb(255, 100, 100));
+                }
+                CellState::Player2 => {
+                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_rgb(100, 100, 255));
+                }
+            }
+
+            painter.rect_stroke(
+                cell_rect,
+                0.0,
+                egui::Stroke::new(0.5, egui::Color32::from_gray(150)),
+                egui::StrokeKind::Inside,
+            );
+        }
+
+        let grid_rect = egui::Rect::from_min_size(
+            egui::pos2(x_offset, y_offset),
+            egui::vec2(grid_size, grid_size),
+        );
+        painter.rect_stroke(
+            grid_rect,
+            0.0,
+            egui::Stroke::new(1.0, egui::Color32::BLACK),
+            egui::StrokeKind::Inside,
+        );
+
+        ui.allocate_space(egui::vec2(grid_size, grid_size));
     }
 }
 
