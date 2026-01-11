@@ -1,3 +1,4 @@
+use crate::constants::{COLOR_GRID_LINE, COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2};
 use crate::types::CellState;
 use eframe::egui;
 
@@ -86,20 +87,20 @@ impl Rule {
 
             match cell_state {
                 CellState::Neutral => {
-                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_gray(200));
+                    painter.rect_filled(cell_rect, 0.0, COLOR_NEUTRAL);
                 }
                 CellState::Player1 => {
-                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_rgb(255, 100, 100));
+                    painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER1);
                 }
                 CellState::Player2 => {
-                    painter.rect_filled(cell_rect, 0.0, egui::Color32::from_rgb(100, 100, 255));
+                    painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER2);
                 }
             }
 
             painter.rect_stroke(
                 cell_rect,
                 0.0,
-                egui::Stroke::new(0.5, egui::Color32::from_gray(150)),
+                egui::Stroke::new(0.5, COLOR_GRID_LINE),
                 egui::StrokeKind::Inside,
             );
         }
