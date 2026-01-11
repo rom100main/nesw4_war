@@ -8,6 +8,10 @@ use eframe::egui;
 
 pub struct Shop {
     pub rules: Vec<Rule>,
+    pub bought_rules: Vec<bool>,
+    pub current_player: u8,
+    pub player1_shopped: bool,
+    pub player2_shopped: bool,
 }
 
 impl Shop {
@@ -22,7 +26,13 @@ impl Shop {
                 rules.push(new_rule);
             }
         }
-        Shop { rules }
+        Shop {
+            rules,
+            current_player: 1,
+            bought_rules: vec![false; SHOP_NB_RULES],
+            player1_shopped: false,
+            player2_shopped: false,
+        }
     }
 
     pub fn buy_rule(&mut self, player: &mut Player, index: usize) -> Result<(), ()> {
@@ -52,19 +62,13 @@ impl Shop {
         Ok(())
     }
 
-    pub fn show(
-        &mut self,
-        ui: &mut egui::Ui,
-        player: &mut Player,
-        shop_current_player: u8,
-        shop_bought_rules: &mut Vec<bool>,
-    ) {
-        let player_color = if shop_current_player == 1 {
+    pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
+        let player_color = if self.current_player == 1 {
             COLOR_PLAYER1
         } else {
             COLOR_PLAYER2
         };
-        let player_name = format!("Player {} Shopping", shop_current_player);
+        let player_name = format!("Player {} Shopping", self.current_player);
         ui.heading(
             egui::RichText::new(player_name)
                 .color(player_color)
@@ -80,7 +84,7 @@ impl Shop {
 
         ui.heading("Rules");
         for i in 0..SHOP_NB_RULES {
-            if !shop_bought_rules[i] {
+            if !self.bought_rules[i] {
                 ui.horizontal(|ui| {
                     self.rules[i].show(ui, i + 1);
                     ui.add_space(10.0);
@@ -91,7 +95,7 @@ impl Shop {
                     if can_buy {
                         if ui.button(format!("Buy (${})", SHOP_PRICE_RULE)).clicked() {
                             if self.buy_rule(player, i).is_ok() {
-                                shop_bought_rules[i] = true;
+                                self.bought_rules[i] = true;
                             }
                         }
                     } else {

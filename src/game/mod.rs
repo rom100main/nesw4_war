@@ -15,8 +15,6 @@ pub struct Game {
     pub round_over: bool,
     pub round_result: Option<String>,
     pub shop_first_player: u8,
-    pub player1_shopped: bool,
-    pub player2_shopped: bool,
 }
 
 impl Game {
@@ -35,8 +33,6 @@ impl Game {
             round_over: false,
             round_result: None,
             shop_first_player: if rand::random() { 1 } else { 2 },
-            player1_shopped: false,
-            player2_shopped: false,
         }
     }
 
@@ -48,8 +44,6 @@ impl Game {
         self.iteration = 0;
         self.round_over = false;
         self.round_result = None;
-        self.player1_shopped = false;
-        self.player2_shopped = false;
     }
 
     fn new_shop(&mut self) {
