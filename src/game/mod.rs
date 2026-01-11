@@ -80,13 +80,14 @@ impl Game {
         &mut self,
         ui: &mut egui::Ui,
         update_interval: &mut std::time::Duration,
-        current_page: &mut super::Page,
+        shop_clicked: &mut bool,
     ) {
         ui.heading("ToomWar Grid Game");
 
         ui.horizontal(|ui| {
             if self.round_over {
                 if ui.button("Shop").clicked() {
+                    *shop_clicked = true;
                     let p1_count = self.grid.count(CellState::Player1);
                     let p2_count = self.grid.count(CellState::Player2);
 
@@ -95,7 +96,6 @@ impl Game {
                     } else {
                         self.shop_first_player = 1;
                     }
-                    *current_page = super::Page::Shop;
                 }
             }
 

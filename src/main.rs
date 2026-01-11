@@ -154,10 +154,18 @@ impl eframe::App for GameUI {
 
                 ctx.request_repaint_after(Duration::from_millis(100));
 
+                let mut shop_clicked = false;
                 egui::CentralPanel::default().show(ctx, |ui| {
                     self.game
-                        .show(ui, &mut self.update_interval, &mut self.current_page);
+                        .show(ui, &mut self.update_interval, &mut shop_clicked);
                 });
+
+                if shop_clicked {
+                    self.game.shop = Shop::new_with_players(&self.game.player1, &self.game.player2);
+                    self.shop_bought_rules = vec![false; SHOP_NB_RULES];
+                    self.shop_current_player = self.game.shop_first_player;
+                    self.current_page = Page::Shop;
+                }
             }
             Page::Shop => {
                 ctx.request_repaint_after(Duration::from_millis(100));
