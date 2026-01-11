@@ -169,10 +169,20 @@ impl Grid {
             }
         }
 
+        let p1_count = self.count(CellState::Player1);
+        let p2_count = self.count(CellState::Player2);
+        let border_color = if p1_count > p2_count {
+            COLOR_PLAYER1
+        } else if p2_count > p1_count {
+            COLOR_PLAYER2
+        } else {
+            egui::Color32::BLACK
+        };
+
         painter.rect_stroke(
             painter_rect,
             0.0,
-            egui::Stroke::new(2.0, egui::Color32::BLACK),
+            egui::Stroke::new(10.0, border_color),
             egui::StrokeKind::Inside,
         );
     }
