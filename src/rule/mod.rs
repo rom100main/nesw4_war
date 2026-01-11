@@ -2,7 +2,7 @@ use crate::constants::{COLOR_GRID_LINE, COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAY
 use crate::types::CellState;
 use eframe::egui;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub struct Rule {
     pub top: CellState,
     pub bottom: CellState,

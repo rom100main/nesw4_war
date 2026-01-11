@@ -25,7 +25,10 @@ impl Shop {
         if player.rules.len() >= PLAYER_MAX_RULES {
             return Err(());
         }
-        player.rules.push(self.rules.remove(index));
+        if index >= self.rules.len() {
+            return Err(());
+        }
+        player.rules.push(self.rules[index].clone());
         player.money -= SHOP_PRICE_RULE;
         Ok(())
     }
