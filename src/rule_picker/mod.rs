@@ -22,11 +22,11 @@ impl RulePicker {
         &mut self,
         ui: &mut egui::Ui,
         //rule_picked: &mut usize, // numéro de la règle achetée
-        update_interval: &mut std::time::Duration,
+        _update_interval: &mut std::time::Duration,
         current_page: &mut Page,
     ) {
         ui.heading("ToomWar Grid Game");
-        if (ui.button("click me").clicked()) {
+        if ui.button("click me").clicked() {
             *current_page = Page::MainGame
         }
     }
