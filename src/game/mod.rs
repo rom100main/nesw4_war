@@ -70,19 +70,20 @@ impl Game {
 
         if p1_count > p2_count {
             self.player1.win += 1;
-            self.round_result = Some(format!("Player 1 wins! {} vs {}", p1_count, p2_count));
+            self.round_result = Some(format!("Player 1 wins!\n{} vs {}", p1_count, p2_count));
             self.shop_first_player = 2;
         } else if p2_count > p1_count {
             self.player2.win += 1;
-            self.round_result = Some(format!("Player 2 wins! {} vs {}", p2_count, p1_count));
+            self.round_result = Some(format!("Player 2 wins!\n{} vs {}", p2_count, p1_count));
             self.shop_first_player = 1;
         } else {
-            self.round_result = Some(format!("Draw! {} - {}", p1_count, p2_count));
+            self.round_result = Some(format!("Draw!\n{} - {}", p1_count, p2_count));
         }
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
         ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
+        ui.add_space(20.0);
 
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
@@ -119,6 +120,7 @@ impl Game {
                                 .size(18.0)
                                 .strong(),
                         );
+                        ui.add_space(10.0);
                         self.player1.show(ui, p1_count);
                     });
                 });
@@ -128,11 +130,13 @@ impl Game {
                     ui.set_max_width(grid_section_width);
                     ui.vertical_centered(|ui| {
                         let iter_text = if self.round_over {
-                            format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
+                            format!("Round Over: {}/{}", self.iteration, MAX_ITERATIONS)
                         } else {
                             format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
                         };
                         ui.heading(egui::RichText::new(iter_text).size(18.0));
+                        ui.add_space(10.0);
+
                         self.grid.show(ui);
 
                         if let Some(ref result) = self.round_result {
@@ -141,7 +145,8 @@ impl Game {
                         }
 
                         if self.round_over {
-                            if ui.button("Shop").clicked() {
+                            ui.add_space(5.0);
+                            if ui.button(egui::RichText::new("Shop").size(18.0)).clicked() {
                                 *shop_clicked = true;
                             }
                         }
@@ -158,6 +163,7 @@ impl Game {
                                 .size(18.0)
                                 .strong(),
                         );
+                        ui.add_space(10.0);
                         self.player2.show(ui, p2_count);
                     });
                 });

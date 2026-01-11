@@ -170,11 +170,14 @@ impl eframe::App for GameUI {
                     };
                     self.game.shop.show(ui, player);
 
-                    ui.add_space(20.0);
+                    ui.add_space(10.0);
                     ui.separator();
                     ui.add_space(10.0);
 
-                    if ui.button("Finish").clicked() {
+                    if ui
+                        .button(egui::RichText::new("Finish").size(18.0))
+                        .clicked()
+                    {
                         self.game.shop.current_player = if self.game.shop.current_player == 1 {
                             2
                         } else {

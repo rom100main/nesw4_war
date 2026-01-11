@@ -24,13 +24,17 @@ impl Player {
     }
 
     pub fn show(&self, ui: &mut egui::Ui, cell_count: usize) {
-        ui.label(format!("Cells: {}", cell_count));
-        ui.label(format!("Money: {}", self.money));
-        ui.label(format!("Rules: {}/{}", self.rules.len(), self.max_rules));
-        ui.label(format!("Score (wins): {}", self.win));
+        ui.label(egui::RichText::new(format!("Cells: {}", cell_count)).monospace());
+        ui.label(egui::RichText::new(format!("Money: {}", self.money)).monospace());
+        ui.label(
+            egui::RichText::new(format!("Rules: {}/{}", self.rules.len(), self.max_rules))
+                .monospace(),
+        );
+        ui.label(egui::RichText::new(format!("Score: {}", self.win)).monospace());
 
         ui.add_space(10.0);
-        ui.label("Rules:");
+        ui.heading(egui::RichText::new("Rules").size(16.0));
+        ui.add_space(5.0);
         egui::Grid::new(format!("rules_grid {}", self.name))
             .num_columns(2)
             .spacing([10.0, 4.0])

@@ -1,7 +1,7 @@
 pub use crate::rule::Rule;
 use crate::{COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES};
 
-use eframe::egui::{self, RichText, vec2};
+use eframe::egui::{self, vec2};
 
 pub struct RulePicker {
     pub player1_choosing: bool,
@@ -36,6 +36,7 @@ impl RulePicker {
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
         ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
+        ui.add_space(20.0);
 
         let (player_num, player_color) = if self.player1_choosing {
             (1, COLOR_PLAYER1)
@@ -43,18 +44,19 @@ impl RulePicker {
             (2, COLOR_PLAYER2)
         };
         ui.label(
-            RichText::new(format!("Time for player {} to select", player_num))
+            egui::RichText::new(format!("Time for player {} to select", player_num))
                 .color(player_color)
                 .size(18.0)
                 .strong(),
         );
+        ui.add_space(10.0);
 
         const NB_RULES_PER_LINE: usize = 5;
         egui::Grid::new("foobaz")
             .spacing(vec2(20., 20.))
             .show(ui, |ui| {
                 for (i, rule) in self.rules.clone().iter().enumerate() {
-                    ui.vertical(|ui| {
+                    ui.vertical_centered(|ui| {
                         rule.show(ui, i);
 
                         if self.rules_available[i] {

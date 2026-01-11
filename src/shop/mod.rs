@@ -4,7 +4,7 @@ use crate::constants::{
 };
 use crate::player::Player;
 use crate::rule::Rule;
-use eframe::egui::{self, RichText};
+use eframe::egui;
 
 pub struct Shop {
     pub rules: Vec<Rule>,
@@ -64,6 +64,7 @@ impl Shop {
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
         ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
+        ui.add_space(20.0);
 
         let player_color = if self.current_player == 1 {
             COLOR_PLAYER1
@@ -77,15 +78,15 @@ impl Shop {
                 .size(18.0)
                 .strong(),
         );
+        ui.add_space(5.0);
+        ui.label(format!("Money: {}", player.money));
 
         ui.add_space(10.0);
         ui.separator();
         ui.add_space(10.0);
 
-        ui.label(format!("Money: {}", player.money));
-        ui.add_space(10.0);
-
-        ui.label(RichText::new("Rules").size(18.0));
+        ui.label(egui::RichText::new("Rules").size(18.0));
+        ui.add_space(5.0);
         for i in 0..SHOP_NB_RULES {
             ui.horizontal(|ui| {
                 self.rules[i].show(ui, i + 1);
@@ -115,20 +116,21 @@ impl Shop {
         ui.separator();
         ui.add_space(10.0);
 
-        ui.heading("Spawn Probability");
+        ui.label(egui::RichText::new("Spawn Probability").size(18.0));
+        ui.add_space(5.0);
         ui.label(format!("Current: {:.4}", player.spawn_proba));
 
         let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
         if can_buy_spawn {
             if ui
-                .button(format!("Upgrade Spawn (+${})", SHOP_PRICE_SPAWN))
+                .button(format!("Upgrade Spawn (${})", SHOP_PRICE_SPAWN))
                 .clicked()
             {
                 let _ = self.buy_spawn(player);
             }
         } else {
             ui.label(format!(
-                "Upgrade Spawn (+${}) - Can't afford",
+                "Upgrade Spawn (${}) - Can't afford",
                 SHOP_PRICE_SPAWN
             ));
         }
