@@ -36,7 +36,6 @@ struct GameUI {
     current_page: Page,
     rule_picker: RulePicker,
     shop_current_player: u8,
-    shop_first_player: u8,
     shop_bought_rules: Vec<bool>,
 }
 
@@ -130,7 +129,6 @@ impl Default for GameUI {
             current_page: Page::InitialRulePicker,
             rule_picker: RulePicker::new(),
             shop_current_player: 1,
-            shop_first_player: 1,
             shop_bought_rules: vec![false; SHOP_NB_RULES],
         }
     }
@@ -147,7 +145,7 @@ impl eframe::App for GameUI {
                 });
             }
             Page::MainGame => {
-                if self.last_update.elapsed() >= self.update_interval {
+                if self.last_update.elapsed() >= self.update_interval && !self.game.round_over {
                     self.update_game();
                     self.last_update = Instant::now();
                 }
@@ -164,6 +162,8 @@ impl eframe::App for GameUI {
                     self.game.shop = Shop::new_with_players(&self.game.player1, &self.game.player2);
                     self.shop_bought_rules = vec![false; SHOP_NB_RULES];
                     self.shop_current_player = self.game.shop_first_player;
+                    self.game.player1_shopped = false;
+                    self.game.player2_shopped = false;
                     self.current_page = Page::Shop;
                 }
             }
@@ -171,8 +171,10 @@ impl eframe::App for GameUI {
                 ctx.request_repaint_after(Duration::from_millis(100));
                 egui::CentralPanel::default().show(ctx, |ui| {
                     let player = if self.shop_current_player == 1 {
+                        self.game.player1_shopped = true;
                         &mut self.game.player1
                     } else {
+                        self.game.player2_shopped = true;
                         &mut self.game.player2
                     };
                     self.game.shop.show(
@@ -190,7 +192,7 @@ impl eframe::App for GameUI {
                         self.shop_current_player =
                             if self.shop_current_player == 1 { 2 } else { 1 };
 
-                        if self.shop_current_player == self.shop_first_player {
+                        if self.game.player1_shopped && self.game.player2_shopped {
                             self.game.new_round();
                             self.current_page = Page::MainGame;
                         }

@@ -15,6 +15,8 @@ pub struct Game {
     pub round_over: bool,
     pub round_result: Option<String>,
     pub shop_first_player: u8,
+    pub player1_shopped: bool,
+    pub player2_shopped: bool,
 }
 
 impl Game {
@@ -32,7 +34,9 @@ impl Game {
             iteration: 0,
             round_over: false,
             round_result: None,
-            shop_first_player: 1,
+            shop_first_player: if rand::random() { 1 } else { 2 },
+            player1_shopped: false,
+            player2_shopped: false,
         }
     }
 
@@ -44,6 +48,8 @@ impl Game {
         self.iteration = 0;
         self.round_over = false;
         self.round_result = None;
+        self.player1_shopped = false;
+        self.player2_shopped = false;
     }
 
     fn new_shop(&mut self) {
@@ -68,9 +74,11 @@ impl Game {
         if p1_count > p2_count {
             self.player1.win += 1;
             self.round_result = Some(format!("Player 1 wins! {} vs {}", p1_count, p2_count));
+            self.shop_first_player = 2;
         } else if p2_count > p1_count {
             self.player2.win += 1;
             self.round_result = Some(format!("Player 2 wins! {} vs {}", p2_count, p1_count));
+            self.shop_first_player = 1;
         } else {
             self.round_result = Some(format!("Draw! {} - {}", p1_count, p2_count));
         }
@@ -88,14 +96,6 @@ impl Game {
             if self.round_over {
                 if ui.button("Shop").clicked() {
                     *shop_clicked = true;
-                    let p1_count = self.grid.count(CellState::Player1);
-                    let p2_count = self.grid.count(CellState::Player2);
-
-                    if p1_count > p2_count {
-                        self.shop_first_player = 2;
-                    } else {
-                        self.shop_first_player = 1;
-                    }
                 }
             }
 
