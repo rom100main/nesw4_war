@@ -20,12 +20,15 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         let size_grid = GRID_SIZE;
+        let player1 = Player::new();
+        let player2 = Player::new();
+        let shop = Shop::new_with_players(&player1, &player2);
         Game {
-            player1: Player::new(),
-            player2: Player::new(),
+            player1,
+            player2,
             grid: Grid::new(size_grid, PLAYER_SPAWN_PROBA, PLAYER_SPAWN_PROBA),
             size_grid,
-            shop: Shop::new(),
+            shop,
             iteration: 0,
             round_over: false,
             round_result: None,
@@ -44,7 +47,7 @@ impl Game {
     }
 
     fn new_shop(&mut self) {
-        self.shop = Shop::new();
+        self.shop = Shop::new_with_players(&self.player1, &self.player2);
     }
 
     pub fn advance_iteration(&mut self) {

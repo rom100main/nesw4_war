@@ -11,10 +11,16 @@ pub struct Shop {
 }
 
 impl Shop {
-    pub fn new() -> Shop {
+    pub fn new_with_players(player1: &Player, player2: &Player) -> Shop {
         let mut rules = Vec::new();
-        for _ in 0..SHOP_NB_RULES {
-            rules.push(Rule::new());
+        while rules.len() < SHOP_NB_RULES {
+            let new_rule = Rule::new();
+            if !rules.contains(&new_rule)
+                && !player1.rules.contains(&new_rule)
+                && !player2.rules.contains(&new_rule)
+            {
+                rules.push(new_rule);
+            }
         }
         Shop { rules }
     }
