@@ -19,7 +19,7 @@ impl RulePicker {
             };
         }
         RulePicker {
-            player1_choosing: true,
+            player1_choosing: rand::random(),
             rules,
             rules_available: vec![true; RULE_PICKER_NB_RULES],
         }
