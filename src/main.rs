@@ -41,7 +41,7 @@ impl Default for GameUI {
 
         // Add more effective rules for both players to demonstrate grid evolution
         // Player 1: Spread towards bottom
-        let rule1 = Rule {
+        /* let rule1 = Rule {
             top: CellState::Player1,
             bottom: CellState::Neutral,
             left: CellState::Neutral,
@@ -104,7 +104,7 @@ impl Default for GameUI {
             left: CellState::Neutral,
             right: CellState::Player2,
         };
-        game.player2.rules.push(rule2);
+        game.player2.rules.push(rule2); */
 
         for i in 0..10 {
             let idx = i * game.grid.width + 10 + i;
@@ -131,12 +131,25 @@ impl eframe::App for GameUI {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         match &self.current_page {
             Page::LandingScreen => todo!(),
+
             Page::InitialRulePicker => {
+                let player = if self.rule_picker.player1_choosing {
+                    &mut self.game.player1
+                } else {
+                    &mut self.game.player2
+                };
+
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    self.rule_picker
-                        .show(ui, &mut self.update_interval, &mut self.current_page);
+                    self.rule_picker.show(ui, player);
                 });
+
+                if self.game.player1.rules.len() == PLAYER_START_RULES
+                    && self.game.player2.rules.len() == PLAYER_START_RULES
+                {
+                    self.current_page = Page::MainGame;
+                }
             }
+
             Page::MainGame => {
                 if self.last_update.elapsed() >= self.update_interval {
                     self.update_game();
@@ -155,6 +168,7 @@ impl eframe::App for GameUI {
                     self.game.new_round();
                 }
             }
+
             Page::EndScreen => todo!(),
         }
     }
