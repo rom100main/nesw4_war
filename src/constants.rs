@@ -1,15 +1,14 @@
 use eframe::egui::Color32;
 
-pub const PLAYER_MAX_RULES: usize = 5;
-pub const PLAYER_START_MONEY: usize = 5;
-pub const PLAYER_ADD_MOENY: usize = 2;
-pub const PLAYER_MONEY: usize = 3;
-pub const PLAYER_SPAWN_PROBA: f32 = 0.01;
+pub const PLAYER_MAX_RULES: usize = 8;
+pub const PLAYER_START_MONEY: usize = 0;
+pub const PLAYER_ADD_MONEY: usize = 2;
+pub const PLAYER_SPAWN_PROBA: f32 = 0.001;
 
-pub const SHOP_NB_RULES: usize = 9;
+pub const SHOP_NB_RULES: usize = 8;
 pub const SHOP_PRICE_RULE: usize = 1;
 pub const SHOP_PRICE_SPAWN: usize = 1;
-pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.01;
+pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.0001;
 
 pub const GRID_SIZE: usize = 50;
 pub const MAX_ITERATIONS: usize = 50;

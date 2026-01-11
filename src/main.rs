@@ -60,17 +60,6 @@ impl Default for GameUI {
         };
         game.player2.rules.push(rule2);
 
-        for i in 0..10 {
-            let idx = i * game.grid.width + 10 + i;
-            if idx < game.grid.values.len() {
-                game.grid.values[idx] = CellState::Player1;
-            }
-            let idx2 = i * game.grid.width + 35 - i;
-            if idx2 < game.grid.values.len() {
-                game.grid.values[idx2] = CellState::Player2;
-            }
-        }
-
         Self {
             game,
             last_update: Instant::now(),

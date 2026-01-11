@@ -113,7 +113,7 @@ impl Shop {
         ui.add_space(10.0);
 
         ui.heading("Spawn Probability");
-        ui.label(format!("Current: {:.2}", player.spawn_proba));
+        ui.label(format!("Current: {:.4}", player.spawn_proba));
 
         let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
         if can_buy_spawn {
