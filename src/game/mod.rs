@@ -23,8 +23,8 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         let size_grid = GRID_SIZE;
-        let player1 = Player::new();
-        let player2 = Player::new();
+        let player1 = Player::new(format!("Player 1"));
+        let player2 = Player::new(format!("Player 2"));
         let shop = Shop::new_with_players(&player1, &player2);
         Game {
             player1,

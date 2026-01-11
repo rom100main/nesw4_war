@@ -3,6 +3,7 @@ use crate::rule::Rule;
 use eframe::egui;
 
 pub struct Player {
+    pub name: String,
     pub rules: Vec<Rule>,
     pub max_rules: usize,
     pub spawn_proba: f32, // spawn probability
@@ -11,8 +12,9 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new() -> Player {
+    pub fn new(name: String) -> Player {
         Player {
+            name,
             rules: Vec::new(),
             max_rules: PLAYER_MAX_RULES,
             spawn_proba: PLAYER_SPAWN_PROBA,
@@ -29,8 +31,18 @@ impl Player {
 
         ui.add_space(10.0);
         ui.label("Rules:");
-        for (i, rule) in self.rules.iter().enumerate() {
-            rule.show(ui, i + 1);
-        }
+        egui::Grid::new(format!("rules_grid {}", self.name))
+            .num_columns(2)
+            .spacing([10.0, 4.0])
+            .show(ui, |ui| {
+                for (i, rule) in self.rules.iter().enumerate() {
+                    ui.vertical(|ui| {
+                        rule.show(ui, i + 1);
+                    });
+                    if (i + 1) % 2 == 0 {
+                        ui.end_row();
+                    }
+                }
+            });
     }
 }
