@@ -84,11 +84,13 @@ impl Shop {
 
         ui.heading("Rules");
         for i in 0..SHOP_NB_RULES {
-            if !self.bought_rules[i] {
-                ui.horizontal(|ui| {
-                    self.rules[i].show(ui, i + 1);
-                    ui.add_space(10.0);
+            ui.horizontal(|ui| {
+                self.rules[i].show(ui, i + 1);
+                ui.add_space(10.0);
 
+                if self.bought_rules[i] {
+                    ui.label(egui::RichText::new("bought").color(egui::Color32::DARK_GREEN));
+                } else {
                     let can_buy =
                         player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
 
@@ -101,9 +103,9 @@ impl Shop {
                     } else {
                         ui.label(format!("Buy (${}) - Can't afford or full", SHOP_PRICE_RULE));
                     }
-                });
-                ui.add_space(5.0);
-            }
+                }
+            });
+            ui.add_space(5.0);
         }
 
         ui.add_space(10.0);
