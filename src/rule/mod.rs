@@ -14,27 +14,36 @@ impl Rule {
     pub fn new() -> Rule {
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        Rule {
-            top: match rng.gen_range(0..3) {
-                0 => CellState::Neutral,
-                1 => CellState::Player1,
-                _ => CellState::Player2,
-            },
-            bottom: match rng.gen_range(0..3) {
-                0 => CellState::Neutral,
-                1 => CellState::Player1,
-                _ => CellState::Player2,
-            },
-            left: match rng.gen_range(0..3) {
-                0 => CellState::Neutral,
-                1 => CellState::Player1,
-                _ => CellState::Player2,
-            },
-            right: match rng.gen_range(0..3) {
-                0 => CellState::Neutral,
-                1 => CellState::Player1,
-                _ => CellState::Player2,
-            },
+        loop {
+            let rule = Rule {
+                top: match rng.gen_range(0..3) {
+                    0 => CellState::Neutral,
+                    1 => CellState::Player1,
+                    _ => CellState::Player2,
+                },
+                bottom: match rng.gen_range(0..3) {
+                    0 => CellState::Neutral,
+                    1 => CellState::Player1,
+                    _ => CellState::Player2,
+                },
+                left: match rng.gen_range(0..3) {
+                    0 => CellState::Neutral,
+                    1 => CellState::Player1,
+                    _ => CellState::Player2,
+                },
+                right: match rng.gen_range(0..3) {
+                    0 => CellState::Neutral,
+                    1 => CellState::Player1,
+                    _ => CellState::Player2,
+                },
+            };
+            if rule.top != CellState::Neutral
+                || rule.bottom != CellState::Neutral
+                || rule.left != CellState::Neutral
+                || rule.right != CellState::Neutral
+            {
+                return rule;
+            }
         }
     }
 
