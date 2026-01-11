@@ -1,5 +1,6 @@
 use crate::constants::{
-    PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES, SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
+    COLOR_PLAYER1, COLOR_PLAYER2, PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES,
+    SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
 };
 use crate::player::Player;
 use crate::rule::Rule;
@@ -45,5 +46,76 @@ impl Shop {
         Ok(())
     }
 
-    pub fn show(&self, _ui: &mut egui::Ui) {}
+    pub fn show(
+        &mut self,
+        ui: &mut egui::Ui,
+        player: &mut Player,
+        shop_current_player: u8,
+        shop_bought_rules: &mut Vec<bool>,
+    ) {
+        let player_color = if shop_current_player == 1 {
+            COLOR_PLAYER1
+        } else {
+            COLOR_PLAYER2
+        };
+        let player_name = format!("Player {} Shopping", shop_current_player);
+        ui.heading(
+            egui::RichText::new(player_name)
+                .color(player_color)
+                .strong(),
+        );
+
+        ui.add_space(10.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        ui.label(format!("Money: {}", player.money));
+        ui.add_space(10.0);
+
+        ui.heading("Rules");
+        for i in 0..SHOP_NB_RULES {
+            if !shop_bought_rules[i] {
+                ui.horizontal(|ui| {
+                    self.rules[i].show(ui, i + 1);
+                    ui.add_space(10.0);
+
+                    let can_buy =
+                        player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
+
+                    if can_buy {
+                        if ui.button(format!("Buy (${})", SHOP_PRICE_RULE)).clicked() {
+                            if self.buy_rule(player, i).is_ok() {
+                                shop_bought_rules[i] = true;
+                            }
+                        }
+                    } else {
+                        ui.label(format!("Buy (${}) - Can't afford or full", SHOP_PRICE_RULE));
+                    }
+                });
+                ui.add_space(5.0);
+            }
+        }
+
+        ui.add_space(10.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        ui.heading("Spawn Probability");
+        ui.label(format!("Current: {:.2}", player.spawn_proba));
+
+        let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
+        if can_buy_spawn {
+            if ui
+                .button(format!("Upgrade Spawn (+${})", SHOP_PRICE_SPAWN))
+                .clicked()
+            {
+                let _ = self.buy_spawn(player);
+            }
+        } else {
+            ui.label(format!(
+                "Upgrade Spawn (+${}) - Can't afford",
+                SHOP_PRICE_SPAWN
+            ));
+        }
+    }
 }
