@@ -108,9 +108,10 @@ impl Grid {
     pub fn show(&mut self, ui: &mut egui::Ui) {
         let available_rect = ui.available_rect_before_wrap();
         let padding = 10.0;
+        let stroke_width = 10.0;
 
-        let max_width = available_rect.width() - padding * 2.0;
-        let max_height = available_rect.height() - padding * 2.0;
+        let max_width = available_rect.width() - padding * 2.0 - stroke_width * 2.0;
+        let max_height = available_rect.height() - padding * 2.0 - stroke_width * 2.0;
 
         if max_width.is_nan() || max_height.is_nan() || max_width <= 0.0 || max_height <= 0.0 {
             return;
@@ -124,23 +125,21 @@ impl Grid {
         let grid_width_px = self.width as f32 * cell_size;
         let grid_height_px = self.height as f32 * cell_size;
 
-        let x_pos = available_rect.min.x + (available_rect.width() - grid_width_px) / 2.0;
-        let y_pos = available_rect.min.y;
-
-        let painter_rect = egui::Rect::from_min_size(
-            egui::pos2(x_pos, y_pos),
-            egui::vec2(grid_width_px, grid_height_px),
-        );
-
-        let (_, painter) = ui.allocate_painter(
-            egui::vec2(grid_width_px, grid_height_px),
+        let (response, painter) = ui.allocate_painter(
+            egui::vec2(
+                grid_width_px + stroke_width * 2.0,
+                grid_height_px + stroke_width * 2.0,
+            ),
             egui::Sense::hover(),
         );
 
+        // The grid area is the allocated area shrunk by the stroke width
+        let grid_rect = response.rect.shrink(stroke_width);
+
         for row in 0..self.height {
             for col in 0..self.width {
-                let x = x_pos + col as f32 * cell_size;
-                let y = y_pos + row as f32 * cell_size;
+                let x = grid_rect.min.x + col as f32 * cell_size;
+                let y = grid_rect.min.y + row as f32 * cell_size;
 
                 let cell_rect =
                     egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(cell_size, cell_size));
@@ -180,10 +179,10 @@ impl Grid {
         };
 
         painter.rect_stroke(
-            painter_rect,
+            grid_rect,
             0.0,
-            egui::Stroke::new(10.0, border_color),
-            egui::StrokeKind::Inside,
+            egui::Stroke::new(stroke_width, border_color),
+            egui::StrokeKind::Outside,
         );
     }
     fn get_idx(&self, x: usize, y: usize) -> usize {
