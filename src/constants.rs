@@ -7,6 +7,8 @@ pub const PLAYER_SPAWN_PROBA: f32 = 0.01;
 
 pub const SHOP_NB_RULES: usize = 9;
 pub const SHOP_PRICE_RULE: usize = 1;
+pub const SHOP_PRICE_SPAWN: usize = 1;
+pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.01;
 
 pub const GRID_SIZE: usize = 50;
 pub const MAX_ITERATIONS: usize = 100;

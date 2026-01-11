@@ -1,4 +1,6 @@
-use crate::constants::{PLAYER_MAX_RULES, SHOP_NB_RULES, SHOP_PRICE_RULE};
+use crate::constants::{
+    PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES, SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
+};
 use crate::player::Player;
 use crate::rule::Rule;
 use eframe::egui;
@@ -25,6 +27,18 @@ impl Shop {
         }
         player.rules.push(self.rules.remove(index));
         player.money -= SHOP_PRICE_RULE;
+        Ok(())
+    }
+
+    pub fn buy_spawn(&mut self, player: &mut Player) -> Result<(), ()> {
+        if player.money < SHOP_PRICE_SPAWN {
+            return Err(());
+        }
+        if player.spawn_proba >= 50.0 {
+            return Err(());
+        }
+        player.spawn_proba += SHOP_ADD_SPAWN_PROBA;
+        player.money -= SHOP_PRICE_SPAWN;
         Ok(())
     }
 
