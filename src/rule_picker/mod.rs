@@ -10,13 +10,16 @@ pub struct RulePicker {
 }
 
 impl RulePicker {
-    pub fn new() -> RulePicker {
-        let mut rules = Vec::<Rule>::new();
+    pub fn new_with_players(player1: &Player, player2: &Player) -> RulePicker {
+        let mut rules = Vec::new();
         while rules.len() < RULE_PICKER_NB_RULES {
             let new_rule = Rule::new();
-            if !rules.contains(&new_rule) {
-                rules.push(new_rule)
-            };
+            if !rules.contains(&new_rule)
+                && !player1.rules.contains(&new_rule)
+                && !player2.rules.contains(&new_rule)
+            {
+                rules.push(new_rule);
+            }
         }
         RulePicker {
             player1_choosing: rand::random(),
