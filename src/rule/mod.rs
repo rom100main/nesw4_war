@@ -51,6 +51,13 @@ impl Rule {
                 right,
             }
     }
+
+    pub fn show(&self, ui: &mut ::eframe::egui::Ui, index: usize) {
+        ui.label(format!(
+            "{}. {} | {} | {} | {}",
+            index, self.top, self.right, self.bottom, self.left
+        ));
+    }
 }
 
 #[cfg(test)]

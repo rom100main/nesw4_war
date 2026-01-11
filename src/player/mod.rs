@@ -30,14 +30,7 @@ impl Player {
         ui.add_space(10.0);
         ui.label("Rules:");
         for (i, rule) in self.rules.iter().enumerate() {
-            ui.label(format!(
-                "{}. {} | {} | {} | {}",
-                i + 1,
-                rule.top,
-                rule.right,
-                rule.bottom,
-                rule.left
-            ));
+            rule.show(ui, i + 1);
         }
     }
 }
