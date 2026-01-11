@@ -4,7 +4,7 @@ use crate::constants::{
 };
 use crate::player::Player;
 use crate::rule::Rule;
-use eframe::egui;
+use eframe::egui::{self, RichText};
 
 pub struct Shop {
     pub rules: Vec<Rule>,
@@ -63,7 +63,7 @@ impl Shop {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading("New Extreme Strategical Warfare");
+        ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
 
         let player_color = if self.current_player == 1 {
             COLOR_PLAYER1
@@ -74,6 +74,7 @@ impl Shop {
         ui.heading(
             egui::RichText::new(player_name)
                 .color(player_color)
+                .size(18.0)
                 .strong(),
         );
 
@@ -84,7 +85,7 @@ impl Shop {
         ui.label(format!("Money: {}", player.money));
         ui.add_space(10.0);
 
-        ui.heading("Rules");
+        ui.label(RichText::new("Rules").size(18.0));
         for i in 0..SHOP_NB_RULES {
             ui.horizontal(|ui| {
                 self.rules[i].show(ui, i + 1);

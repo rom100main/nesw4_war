@@ -35,7 +35,7 @@ impl RulePicker {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading("New Extreme Strategical Warfare");
+        ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
 
         let (player_num, player_color) = if self.player1_choosing {
             (1, COLOR_PLAYER1)
@@ -43,7 +43,10 @@ impl RulePicker {
             (2, COLOR_PLAYER2)
         };
         ui.label(
-            RichText::new(format!("Time for player {} to select", player_num)).color(player_color),
+            RichText::new(format!("Time for player {} to select", player_num))
+                .color(player_color)
+                .size(18.0)
+                .strong(),
         );
 
         const NB_RULES_PER_LINE: usize = 5;

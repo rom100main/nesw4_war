@@ -82,7 +82,7 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
-        ui.heading("New Extreme Strategical Warfare");
+        ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
 
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
@@ -113,7 +113,12 @@ impl Game {
                     ui.set_min_width(p1_section_width);
                     ui.set_max_width(p1_section_width);
                     ui.vertical(|ui| {
-                        ui.heading(egui::RichText::new("Player 1").color(COLOR_PLAYER1));
+                        ui.heading(
+                            egui::RichText::new("Player 1")
+                                .color(COLOR_PLAYER1)
+                                .size(18.0)
+                                .strong(),
+                        );
                         self.player1.show(ui, p1_count);
                     });
                 });
@@ -127,7 +132,7 @@ impl Game {
                         } else {
                             format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
                         };
-                        ui.heading(iter_text);
+                        ui.heading(egui::RichText::new(iter_text).size(18.0));
                         self.grid.show(ui);
 
                         if let Some(ref result) = self.round_result {
@@ -147,7 +152,12 @@ impl Game {
                     ui.set_min_width(p2_section_width);
                     ui.set_max_width(p2_section_width);
                     ui.vertical(|ui| {
-                        ui.heading(egui::RichText::new("Player 2").color(COLOR_PLAYER2));
+                        ui.heading(
+                            egui::RichText::new("Player 2")
+                                .color(COLOR_PLAYER2)
+                                .size(18.0)
+                                .strong(),
+                        );
                         self.player2.show(ui, p2_count);
                     });
                 });
