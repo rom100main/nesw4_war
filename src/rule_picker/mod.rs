@@ -1,5 +1,5 @@
 pub use crate::rule::Rule;
-use crate::{COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES};
+use crate::{CELL_SIZE, COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES};
 
 use eframe::egui::{self, vec2};
 
@@ -38,40 +38,54 @@ impl RulePicker {
         ui.heading(egui::RichText::new("New Extreme Strategical Warfare").size(24.0));
         ui.add_space(20.0);
 
-        let (player_num, player_color) = if self.player1_choosing {
-            (1, COLOR_PLAYER1)
-        } else {
-            (2, COLOR_PLAYER2)
-        };
-        ui.label(
-            egui::RichText::new(format!("Time for player {} to select", player_num))
-                .color(player_color)
-                .size(18.0)
-                .strong(),
-        );
+        ui.vertical_centered(|ui| {
+            let (player_num, player_color) = if self.player1_choosing {
+                (1, COLOR_PLAYER1)
+            } else {
+                (2, COLOR_PLAYER2)
+            };
+            ui.label(
+                egui::RichText::new(format!("Time for player {} to select", player_num))
+                    .color(player_color)
+                    .size(18.0)
+                    .strong(),
+            );
+        });
         ui.add_space(10.0);
 
         const NB_RULES_PER_LINE: usize = 5;
-        egui::Grid::new("foobaz")
-            .spacing(vec2(20., 20.))
-            .show(ui, |ui| {
-                for (i, rule) in self.rules.clone().iter().enumerate() {
-                    ui.vertical_centered(|ui| {
-                        rule.show(ui, i);
+        const ITEM_WIDTH: f32 = CELL_SIZE * 3.0;
+        const SPACING: f32 = 30.0;
+        let grid_width =
+            NB_RULES_PER_LINE as f32 * ITEM_WIDTH + (NB_RULES_PER_LINE as f32 - 1.0) * SPACING;
+        let offset = (ui.available_width() - grid_width) / 2.0;
 
-                        if self.rules_available[i] {
-                            if ui.button("Select").clicked() {
-                                self.add_rule(player, i);
-                                self.player1_choosing = !self.player1_choosing;
-                            };
-                        } else {
-                            ui.label("Chosen");
+        ui.horizontal(|ui| {
+            if offset > 0.0 {
+                ui.add_space(offset);
+            }
+            egui::Grid::new("rulepicker_grid")
+                .spacing(vec2(SPACING, 20.0))
+                .show(ui, |ui| {
+                    for (i, rule) in self.rules.clone().iter().enumerate() {
+                        ui.vertical_centered(|ui| {
+                            ui.set_min_width(ITEM_WIDTH);
+                            rule.show(ui, i);
+
+                            if self.rules_available[i] {
+                                if ui.button("Select").clicked() {
+                                    self.add_rule(player, i);
+                                    self.player1_choosing = !self.player1_choosing;
+                                };
+                            } else {
+                                ui.label("Chosen");
+                            }
+                        });
+                        if (i + 1) % NB_RULES_PER_LINE == 0 {
+                            ui.end_row()
                         }
-                    });
-                    if (i + 1) % NB_RULES_PER_LINE == 0 {
-                        ui.end_row()
                     }
-                }
-            });
+                });
+        });
     }
 }

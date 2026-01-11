@@ -16,6 +16,7 @@ pub const SHOP_PRICE_SPAWN: usize = 1;
 pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.0001;
 
 pub const GRID_SIZE: usize = 64;
+pub const CELL_SIZE: f32 = 16.0;
 pub const MAX_ITERATIONS: usize = 128;
 pub const UPDATE_INTERVAL_MS: u64 = 100;
 

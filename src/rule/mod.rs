@@ -1,3 +1,4 @@
+use crate::CELL_SIZE;
 use crate::constants::{COLOR_GRID_LINE, COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2};
 use crate::types::CellState;
 use eframe::egui;
@@ -64,8 +65,7 @@ impl Rule {
     }
 
     pub fn show(&self, ui: &mut ::eframe::egui::Ui, index: usize) {
-        let cell_size = 15.0;
-        let grid_size = cell_size * 3.0;
+        let grid_size = CELL_SIZE * 3.0;
 
         ui.label(format!("Rule {}", index));
 
@@ -83,11 +83,11 @@ impl Rule {
         ];
 
         for (col, row, cell_state) in cells {
-            let x = x_offset + col as f32 * cell_size;
-            let y = y_offset + row as f32 * cell_size;
+            let x = x_offset + col as f32 * CELL_SIZE;
+            let y = y_offset + row as f32 * CELL_SIZE;
 
             let cell_rect =
-                egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(cell_size, cell_size));
+                egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(CELL_SIZE, CELL_SIZE));
 
             match cell_state {
                 CellState::Neutral => {

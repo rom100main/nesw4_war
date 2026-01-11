@@ -37,7 +37,7 @@ impl Player {
         ui.add_space(5.0);
         egui::Grid::new(format!("rules_grid {}", self.name))
             .num_columns(2)
-            .spacing([10.0, 4.0])
+            .spacing([10.0, 10.0])
             .show(ui, |ui| {
                 for (i, rule) in self.rules.iter().enumerate() {
                     ui.vertical(|ui| {
