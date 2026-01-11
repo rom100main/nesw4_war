@@ -79,8 +79,6 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
-        ui.heading("ToomWar Grid Game");
-
         ui.horizontal(|ui| {
             if self.round_over {
                 if ui.button("Shop").clicked() {
