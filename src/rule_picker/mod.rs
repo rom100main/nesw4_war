@@ -35,7 +35,7 @@ impl RulePicker {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading("ToomWar Grid Game");
+        ui.heading("New Extreme Strategical Warfare");
 
         let (player_num, player_color) = if self.player1_choosing {
             (1, COLOR_PLAYER1)

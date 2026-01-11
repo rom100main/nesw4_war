@@ -82,6 +82,8 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
+        ui.heading("New Extreme Strategical Warfare");
+
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
 
