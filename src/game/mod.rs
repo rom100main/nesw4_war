@@ -1,6 +1,6 @@
 use crate::PLAYER_ADD_MONEY;
 use crate::constants::{
-    COLOR_PLAYER1, COLOR_PLAYER2, GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA,
+    COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2, GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA,
 };
 use crate::grid::Grid;
 use crate::player::Player;
@@ -96,48 +96,93 @@ impl Game {
         let grid_section_width = total_width * 3.0 / 5.0;
         let p2_section_width = total_width / 5.0;
 
-        ui.horizontal(|ui| {
-            ui.scope(|ui| {
-                ui.set_min_width(p1_section_width);
-                ui.set_max_width(p1_section_width);
-                ui.vertical(|ui| {
-                    ui.heading(egui::RichText::new("Player 1").color(COLOR_PLAYER1));
-                    self.player1.show(ui, p1_count);
+        let bar_height = 50.0;
+        let mut game_rect = available_rect;
+        game_rect.max.y -= bar_height;
+
+        let bar_rect = egui::Rect::from_min_max(
+            egui::pos2(available_rect.min.x, game_rect.max.y),
+            available_rect.max,
+        );
+
+        ui.allocate_ui_at_rect(game_rect, |ui| {
+            ui.horizontal(|ui| {
+                ui.scope(|ui| {
+                    ui.set_min_width(p1_section_width);
+                    ui.set_max_width(p1_section_width);
+                    ui.vertical(|ui| {
+                        ui.heading(egui::RichText::new("Player 1").color(COLOR_PLAYER1));
+                        self.player1.show(ui, p1_count);
+                    });
                 });
-            });
 
-            ui.scope(|ui| {
-                ui.set_min_width(grid_section_width);
-                ui.set_max_width(grid_section_width);
-                ui.vertical_centered(|ui| {
-                    let iter_text = if self.round_over {
-                        format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
-                    } else {
-                        format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
-                    };
-                    ui.heading(iter_text);
-                    self.grid.show(ui);
+                ui.scope(|ui| {
+                    ui.set_min_width(grid_section_width);
+                    ui.set_max_width(grid_section_width);
+                    ui.vertical_centered(|ui| {
+                        let iter_text = if self.round_over {
+                            format!("Round Over - {}/{}", self.iteration, MAX_ITERATIONS)
+                        } else {
+                            format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
+                        };
+                        ui.heading(iter_text);
+                        self.grid.show(ui);
 
-                    if let Some(ref result) = self.round_result {
-                        ui.add_space(10.0);
-                        ui.heading(result);
-                    }
-
-                    if self.round_over {
-                        if ui.button("Shop").clicked() {
-                            *shop_clicked = true;
+                        if let Some(ref result) = self.round_result {
+                            ui.add_space(10.0);
+                            ui.heading(result);
                         }
-                    }
+
+                        if self.round_over {
+                            if ui.button("Shop").clicked() {
+                                *shop_clicked = true;
+                            }
+                        }
+                    });
+                });
+
+                ui.scope(|ui| {
+                    ui.set_min_width(p2_section_width);
+                    ui.set_max_width(p2_section_width);
+                    ui.vertical(|ui| {
+                        ui.heading(egui::RichText::new("Player 2").color(COLOR_PLAYER2));
+                        self.player2.show(ui, p2_count);
+                    });
                 });
             });
+        });
 
-            ui.scope(|ui| {
-                ui.set_min_width(p2_section_width);
-                ui.set_max_width(p2_section_width);
-                ui.vertical(|ui| {
-                    ui.heading(egui::RichText::new("Player 2").color(COLOR_PLAYER2));
-                    self.player2.show(ui, p2_count);
-                });
+        ui.allocate_ui_at_rect(bar_rect, |ui| {
+            let neutral_count = self.grid.count(CellState::Neutral);
+            let total_cells = (p1_count + p2_count + neutral_count) as f32;
+
+            ui.vertical_centered(|ui| {
+                ui.add_space(10.0);
+                let (rect, _response) = ui.allocate_exact_size(
+                    egui::vec2(grid_section_width, 30.0),
+                    egui::Sense::hover(),
+                );
+
+                let painter = ui.painter();
+                let width = rect.width();
+                let p1_width = (p1_count as f32 / total_cells) * width;
+                let neutral_width = (neutral_count as f32 / total_cells) * width;
+                let p2_width = width - p1_width - neutral_width;
+
+                let p1_rect =
+                    egui::Rect::from_min_size(rect.min, egui::vec2(p1_width, rect.height()));
+                let neutral_rect = egui::Rect::from_min_size(
+                    rect.min + egui::vec2(p1_width, 0.0),
+                    egui::vec2(neutral_width, rect.height()),
+                );
+                let p2_rect = egui::Rect::from_min_size(
+                    rect.min + egui::vec2(p1_width + neutral_width, 0.0),
+                    egui::vec2(p2_width, rect.height()),
+                );
+
+                painter.rect_filled(p1_rect, 0.0, COLOR_PLAYER1);
+                painter.rect_filled(neutral_rect, 0.0, COLOR_NEUTRAL);
+                painter.rect_filled(p2_rect, 0.0, COLOR_PLAYER2);
             });
         });
     }
