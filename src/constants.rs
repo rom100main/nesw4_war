@@ -21,6 +21,6 @@ pub const MAX_ITERATIONS: usize = 128;
 pub const UPDATE_INTERVAL_MS: u64 = 100;
 
 pub const COLOR_NEUTRAL: Color32 = Color32::from_gray(200);
-pub const COLOR_PLAYER1: Color32 = Color32::from_rgb(255, 100, 100);
-pub const COLOR_PLAYER2: Color32 = Color32::from_rgb(100, 100, 255);
+pub const COLOR_PLAYER1: Color32 = Color32::from_rgb(100, 100, 255);
+pub const COLOR_PLAYER2: Color32 = Color32::from_rgb(255, 100, 100);
 pub const COLOR_GRID_LINE: Color32 = Color32::from_gray(150);

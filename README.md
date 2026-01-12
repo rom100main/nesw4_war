@@ -11,8 +11,8 @@ NESW4 is a competitive game where two players fight to dominate the grid by stra
 - **Grid**: A 64x64 toroidal (wrapping) grid
 - **Cell States**:
   - Neutral (gray)
-  - Player 1 (red)
-  - Player 2 (blue)
+  - Player 1 (blue)
+  - Player 2 (red)
 
 - **Rule System**: Each rule defines a pattern of 4 neighbors (top, right, bottom, left). When a cell's neighbors match a player's rule, that cell becomes theirs.
 
