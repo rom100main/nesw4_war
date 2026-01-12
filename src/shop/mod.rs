@@ -87,6 +87,13 @@ impl Shop {
 
         ui.label(egui::RichText::new("Rules").size(18.0));
         ui.add_space(5.0);
+
+        let can_buy = player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
+        if !can_buy {
+            ui.label(format!("Can't afford (${}) or full", SHOP_PRICE_RULE));
+            ui.add_space(5.0);
+        }
+
         ui.horizontal(|ui| {
             for i in 0..SHOP_NB_RULES {
                 ui.vertical(|ui| {
@@ -96,17 +103,12 @@ impl Shop {
                     if self.bought_rules[i] {
                         ui.label(egui::RichText::new("bought").color(egui::Color32::DARK_GREEN));
                     } else {
-                        let can_buy = player.money >= SHOP_PRICE_RULE
-                            && player.rules.len() < PLAYER_MAX_RULES;
-
                         if can_buy {
                             if ui.button(format!("Buy (${})", SHOP_PRICE_RULE)).clicked() {
                                 if self.buy_rule(player, i).is_ok() {
                                     self.bought_rules[i] = true;
                                 }
                             }
-                        } else {
-                            ui.label(format!("Buy (${}) - Can't afford or full", SHOP_PRICE_RULE));
                         }
                     }
                 });
@@ -120,9 +122,15 @@ impl Shop {
 
         ui.label(egui::RichText::new("Spawn Probability").size(18.0));
         ui.add_space(5.0);
-        ui.label(format!("Current: {:.4}", player.spawn_proba));
 
         let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
+        if !can_buy_spawn {
+            ui.label(format!("Can't afford (${})", SHOP_PRICE_SPAWN));
+            ui.add_space(5.0);
+        }
+
+        ui.label(format!("Current: {:.4}", player.spawn_proba));
+
         if can_buy_spawn {
             if ui
                 .button(format!("Upgrade Spawn (${})", SHOP_PRICE_SPAWN))
@@ -130,11 +138,6 @@ impl Shop {
             {
                 let _ = self.buy_spawn(player);
             }
-        } else {
-            ui.label(format!(
-                "Upgrade Spawn (${}) - Can't afford",
-                SHOP_PRICE_SPAWN
-            ));
         }
     }
 }
