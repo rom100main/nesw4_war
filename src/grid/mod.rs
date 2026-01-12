@@ -55,8 +55,8 @@ impl Grid {
                 let current_idx = self.get_idx(x, y);
 
                 // Get the cell states for checking rules.
-                // top, bottom, left, right refer to the cells relative to the current cell
-                let (top_idx, bottom_idx, left_idx, right_idx) = if self.toric {
+                // top, right, bottom, left refer to the cells relative to the current cell
+                let (top_idx, right_idx, bottom_idx, left_idx) = if self.toric {
                     // Toroidal - wrap around
                     let top_y = if y == 0 { self.height - 1 } else { y - 1 };
                     let bottom_y = if y == self.height - 1 { 0 } else { y + 1 };
@@ -64,9 +64,9 @@ impl Grid {
                     let right_x = if x == self.width - 1 { 0 } else { x + 1 };
                     (
                         self.get_idx(x, top_y),
+                        self.get_idx(right_x, y),
                         self.get_idx(x, bottom_y),
                         self.get_idx(left_x, y),
-                        self.get_idx(right_x, y),
                     )
                 } else {
                     // Non-toroidal - out of bounds
@@ -75,26 +75,26 @@ impl Grid {
                     }
                     (
                         self.get_idx(x, y - 1),
+                        self.get_idx(x + 1, y),
                         self.get_idx(x, y + 1),
                         self.get_idx(x - 1, y),
-                        self.get_idx(x + 1, y),
                     )
                 };
 
                 let top_state = self.values[top_idx];
+                let right_state = self.values[right_idx];
                 let bottom_state = self.values[bottom_idx];
                 let left_state = self.values[left_idx];
-                let right_state = self.values[right_idx];
 
                 // Check if any rule matches
                 for rule in rules_p1 {
-                    if rule.next(top_state, bottom_state, left_state, right_state) {
+                    if rule.next(top_state, right_state, bottom_state, left_state) {
                         new_values[current_idx] = CellState::Player1;
                         continue 'cell;
                     }
                 }
                 for rule in rules_p2 {
-                    if rule.next(top_state, bottom_state, left_state, right_state) {
+                    if rule.next(top_state, right_state, bottom_state, left_state) {
                         new_values[current_idx] = CellState::Player2;
                         continue 'cell;
                     }

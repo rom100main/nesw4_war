@@ -6,9 +6,9 @@ use eframe::egui;
 #[derive(PartialEq, Clone, Debug)]
 pub struct Rule {
     pub top: CellState,
+    pub right: CellState,
     pub bottom: CellState,
     pub left: CellState,
-    pub right: CellState,
 }
 
 impl Rule {
@@ -18,6 +18,11 @@ impl Rule {
         loop {
             let rule = Rule {
                 top: match rng.gen_range(0..3) {
+                    0 => CellState::Neutral,
+                    1 => CellState::Player1,
+                    _ => CellState::Player2,
+                },
+                right: match rng.gen_range(0..3) {
                     0 => CellState::Neutral,
                     1 => CellState::Player1,
                     _ => CellState::Player2,
@@ -32,16 +37,11 @@ impl Rule {
                     1 => CellState::Player1,
                     _ => CellState::Player2,
                 },
-                right: match rng.gen_range(0..3) {
-                    0 => CellState::Neutral,
-                    1 => CellState::Player1,
-                    _ => CellState::Player2,
-                },
             };
             if rule.top != CellState::Neutral
+                || rule.right != CellState::Neutral
                 || rule.bottom != CellState::Neutral
                 || rule.left != CellState::Neutral
-                || rule.right != CellState::Neutral
             {
                 return rule;
             }
@@ -51,16 +51,16 @@ impl Rule {
     pub fn next(
         &self,
         top: CellState,
+        right: CellState,
         bottom: CellState,
         left: CellState,
-        right: CellState,
     ) -> bool {
         *self
             == Rule {
                 top,
+                right,
                 bottom,
                 left,
-                right,
             }
     }
 
@@ -77,9 +77,9 @@ impl Rule {
 
         let cells = [
             (1, 0, self.top),
-            (0, 1, self.left),
             (2, 1, self.right),
             (1, 2, self.bottom),
+            (0, 1, self.left),
         ];
 
         for (col, row, cell_state) in cells {
@@ -127,15 +127,15 @@ mod tests {
     fn test_rule_next_true() {
         let rule = Rule {
             top: CellState::Player1,
+            right: CellState::Neutral,
             bottom: CellState::Player2,
             left: CellState::Player1,
-            right: CellState::Neutral,
         };
         assert!(rule.next(
             CellState::Player1,
+            CellState::Neutral,
             CellState::Player2,
             CellState::Player1,
-            CellState::Neutral
         ));
     }
 
@@ -143,15 +143,15 @@ mod tests {
     fn test_rule_next_false() {
         let rule = Rule {
             top: CellState::Player1,
+            right: CellState::Neutral,
             bottom: CellState::Player2,
             left: CellState::Player1,
-            right: CellState::Neutral,
         };
         assert!(!rule.next(
             CellState::Player2,
+            CellState::Neutral,
             CellState::Player2,
             CellState::Player1,
-            CellState::Neutral
         ));
     }
 }
