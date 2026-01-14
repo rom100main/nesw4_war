@@ -1,6 +1,5 @@
 pub use crate::rule::Rule;
 use crate::{CELL_SIZE, COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES, components};
-
 use eframe::egui::{self, vec2};
 
 pub struct RulePicker {

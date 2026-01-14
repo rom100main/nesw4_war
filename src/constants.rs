@@ -1,6 +1,5 @@
-use std::usize;
-
 use eframe::egui::Color32;
+use std::usize;
 
 pub const PLAYER_MAX_RULES: usize = 16;
 pub const PLAYER_START_RULES: usize = 4;
