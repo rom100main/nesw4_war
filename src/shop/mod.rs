@@ -1,10 +1,10 @@
-use crate::components;
 use crate::constants::{
     COLOR_PLAYER1, COLOR_PLAYER2, PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES,
     SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
 };
 use crate::player::Player;
 use crate::rule::Rule;
+use crate::{CELL_SIZE, components};
 use eframe::egui;
 
 pub struct Shop {
@@ -95,6 +95,7 @@ impl Shop {
         ui.horizontal(|ui| {
             for i in 0..SHOP_NB_RULES {
                 ui.vertical(|ui| {
+                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
                     self.rules[i].show(ui);
                     ui.add_space(10.0);
 
