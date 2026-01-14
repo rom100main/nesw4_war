@@ -96,6 +96,9 @@ impl Rule {
     }
 
     pub fn show(&self, ui: &mut ::eframe::egui::Ui) {
+        let available_rect = ui.available_rect_before_wrap();
+        let margin_left = (available_rect.width() - CELL_SIZE * 3.0) / 2.0;
+
         ui.label(self.to_string());
 
         let grid_size = CELL_SIZE * 3.0;
@@ -113,7 +116,7 @@ impl Rule {
         ];
 
         for (col, row, cell_state) in cells {
-            let x = x_offset + col as f32 * CELL_SIZE;
+            let x = x_offset + col as f32 * CELL_SIZE + margin_left;
             let y = y_offset + row as f32 * CELL_SIZE;
 
             let cell_rect =
