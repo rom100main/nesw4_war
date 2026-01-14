@@ -75,7 +75,8 @@ impl Shop {
         Ok(())
     }
 
-    pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player, opponent: &mut Player) {
+    pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player, opponent: &mut Player) -> bool {
+        let mut finish_clicked = false;
         components::text::title(ui);
 
         let player_color = if self.current_player == 1 {
@@ -96,117 +97,134 @@ impl Shop {
         ui.separator();
         ui.add_space(10.0);
 
-        components::text::heading(ui, "Rules");
+        egui::ScrollArea::vertical().show(ui, |ui| {
+            components::text::heading(ui, "Rules");
 
-        ui.label(format!("Cost: ${}", SHOP_PRICE_RULE));
-        ui.add_space(5.0);
-
-        let can_buy = player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
-        if !can_buy {
-            ui.label("Can't afford or full");
+            ui.label(format!("Cost: ${}", SHOP_PRICE_RULE));
             ui.add_space(5.0);
-        }
 
-        ui.horizontal(|ui| {
-            for i in 0..SHOP_NB_RULES {
-                ui.vertical(|ui| {
-                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                    self.rules[i].show(ui);
-                    ui.add_space(10.0);
+            let can_buy = player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
+            if !can_buy {
+                ui.label("Can't afford or full");
+                ui.add_space(5.0);
+            }
 
-                    if self.bought_rules[i] {
-                        ui.label(egui::RichText::new("bought").color(egui::Color32::DARK_GREEN));
-                    } else {
-                        if can_buy {
-                            if ui.button("Buy").clicked() {
-                                if self.buy_rule(player, i).is_ok() {
-                                    self.bought_rules[i] = true;
+            ui.horizontal(|ui| {
+                for i in 0..SHOP_NB_RULES {
+                    ui.vertical(|ui| {
+                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                        self.rules[i].show(ui);
+                        ui.add_space(10.0);
+
+                        if self.bought_rules[i] {
+                            ui.label(
+                                egui::RichText::new("bought").color(egui::Color32::DARK_GREEN),
+                            );
+                        } else {
+                            if can_buy {
+                                if ui.button("Buy").clicked() {
+                                    if self.buy_rule(player, i).is_ok() {
+                                        self.bought_rules[i] = true;
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-                ui.add_space(5.0);
-            }
-        });
+                    });
+                    ui.add_space(5.0);
+                }
+            });
 
-        ui.add_space(10.0);
-        ui.separator();
-        ui.add_space(10.0);
+            ui.add_space(10.0);
+            ui.separator();
+            ui.add_space(10.0);
 
-        components::text::heading(ui, "Delete Rules");
+            components::text::heading(ui, "Delete Rules");
 
-        ui.label(format!("Cost: ${}", SHOP_PRICE_DELETE_RULE));
-        ui.add_space(5.0);
-
-        let can_delete = player.money >= SHOP_PRICE_DELETE_RULE;
-
-        if !can_delete {
-            ui.label("Can't afford");
+            ui.label(format!("Cost: ${}", SHOP_PRICE_DELETE_RULE));
             ui.add_space(5.0);
-        }
 
-        components::text::heading_small(ui, "Your Rules");
+            let can_delete = player.money >= SHOP_PRICE_DELETE_RULE;
 
-        ui.horizontal(|ui| {
-            for i in 0..player.rules.len() {
-                ui.vertical(|ui| {
-                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                    player.rules[i].show(ui);
-                    ui.add_space(10.0);
-
-                    if can_delete {
-                        if ui.button("Delete").clicked() {
-                            let _ = self.delete_rule(player, i);
-                        }
-                    }
-                });
+            if !can_delete {
+                ui.label("Can't afford");
                 ui.add_space(5.0);
             }
-        });
 
-        ui.add_space(10.0);
+            components::text::heading_small(ui, "Your Rules");
 
-        components::text::heading_small(ui, "Opponent's Rules");
+            ui.horizontal(|ui| {
+                for i in 0..player.rules.len() {
+                    ui.vertical(|ui| {
+                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                        player.rules[i].show(ui);
+                        ui.add_space(10.0);
 
-        ui.horizontal(|ui| {
-            for i in 0..opponent.rules.len() {
-                ui.vertical(|ui| {
-                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                    opponent.rules[i].show(ui);
-                    ui.add_space(10.0);
-
-                    if can_delete {
-                        if ui.button("Delete").clicked() {
-                            let _ = self.delete_rule(opponent, i);
+                        if can_delete {
+                            if ui.button("Delete").clicked() {
+                                let _ = self.delete_rule(player, i);
+                            }
                         }
-                    }
-                });
-                ui.add_space(5.0);
-            }
-        });
+                    });
+                    ui.add_space(5.0);
+                }
+            });
 
-        ui.add_space(10.0);
-        ui.separator();
-        ui.add_space(10.0);
+            ui.add_space(10.0);
 
-        components::text::heading(ui, "Spawn Probability");
+            components::text::heading_small(ui, "Opponent's Rules");
 
-        ui.label(format!("Cost: ${}", SHOP_PRICE_SPAWN));
-        ui.add_space(5.0);
+            ui.horizontal(|ui| {
+                for i in 0..opponent.rules.len() {
+                    ui.vertical(|ui| {
+                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                        opponent.rules[i].show(ui);
+                        ui.add_space(10.0);
 
-        let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
-        if !can_buy_spawn {
-            ui.label("Can't afford");
+                        if can_delete {
+                            if ui.button("Delete").clicked() {
+                                let _ = self.delete_rule(opponent, i);
+                            }
+                        }
+                    });
+                    ui.add_space(5.0);
+                }
+            });
+
+            ui.add_space(10.0);
+            ui.separator();
+            ui.add_space(10.0);
+
+            components::text::heading(ui, "Spawn Probability");
+
+            ui.label(format!("Cost: ${}", SHOP_PRICE_SPAWN));
             ui.add_space(5.0);
-        }
 
-        ui.label(format!("Current: {:.4}", player.spawn_proba));
-
-        if can_buy_spawn {
-            if ui.button("Upgrade Spawn").clicked() {
-                let _ = self.buy_spawn(player);
+            let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
+            if !can_buy_spawn {
+                ui.label("Can't afford");
+                ui.add_space(5.0);
             }
-        }
+
+            ui.label(format!("Current: {:.4}", player.spawn_proba));
+
+            if can_buy_spawn {
+                if ui.button("Upgrade Spawn").clicked() {
+                    let _ = self.buy_spawn(player);
+                }
+            }
+
+            ui.add_space(10.0);
+            ui.separator();
+            ui.add_space(10.0);
+
+            if ui
+                .button(egui::RichText::new("Finish").size(18.0))
+                .clicked()
+            {
+                finish_clicked = true;
+            }
+        });
+
+        finish_clicked
     }
 }

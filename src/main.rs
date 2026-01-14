@@ -115,16 +115,7 @@ impl eframe::App for GameUI {
                         self.game.shop.player2_shopped = true;
                         (&mut self.game.player2, &mut self.game.player1)
                     };
-                    self.game.shop.show(ui, player, opponent);
-
-                    ui.add_space(10.0);
-                    ui.separator();
-                    ui.add_space(10.0);
-
-                    if ui
-                        .button(egui::RichText::new("Finish").size(18.0))
-                        .clicked()
-                    {
+                    if self.game.shop.show(ui, player, opponent) {
                         self.game.shop.current_player = if self.game.shop.current_player == 1 {
                             2
                         } else {
