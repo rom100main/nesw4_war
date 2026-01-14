@@ -52,7 +52,7 @@ impl RulePicker {
         ui.add_space(10.0);
 
         const NB_RULES_PER_LINE: usize = 5;
-        const ITEM_WIDTH: f32 = CELL_SIZE * 3.0;
+        const ITEM_WIDTH: f32 = CELL_SIZE * 3.0 + 10.0;
         const SPACING: f32 = 30.0;
         let grid_width =
             NB_RULES_PER_LINE as f32 * ITEM_WIDTH + (NB_RULES_PER_LINE as f32 - 1.0) * SPACING;
@@ -68,7 +68,7 @@ impl RulePicker {
                     for (i, rule) in self.rules.clone().iter().enumerate() {
                         ui.vertical_centered(|ui| {
                             ui.set_min_width(ITEM_WIDTH);
-                            rule.show(ui, i);
+                            rule.show(ui);
 
                             if self.rules_available[i] {
                                 if ui.button("Select").clicked() {

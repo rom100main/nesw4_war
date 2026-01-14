@@ -48,7 +48,7 @@ impl Player {
             .show(ui, |ui| {
                 for (i, rule) in self.rules.iter().enumerate() {
                     ui.vertical_centered(|ui| {
-                        rule.show(ui, i + 1);
+                        rule.show(ui);
                     });
                     if (i + 1) % 2 == 0 {
                         ui.end_row();

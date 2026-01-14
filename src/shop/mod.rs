@@ -95,7 +95,7 @@ impl Shop {
         ui.horizontal(|ui| {
             for i in 0..SHOP_NB_RULES {
                 ui.vertical(|ui| {
-                    self.rules[i].show(ui, i + 1);
+                    self.rules[i].show(ui);
                     ui.add_space(10.0);
 
                     if self.bought_rules[i] {

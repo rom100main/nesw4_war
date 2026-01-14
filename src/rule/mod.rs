@@ -95,11 +95,10 @@ impl Rule {
             }
     }
 
-    pub fn show(&self, ui: &mut ::eframe::egui::Ui, index: usize) {
+    pub fn show(&self, ui: &mut ::eframe::egui::Ui) {
+        ui.label(self.to_string());
+
         let grid_size = CELL_SIZE * 3.0;
-
-        ui.label(format!("Rule {}", index));
-
         let cursor = ui.cursor();
         let x_offset = cursor.min.x;
         let y_offset = cursor.min.y;
@@ -124,6 +123,34 @@ impl Rule {
         }
 
         ui.allocate_space(egui::vec2(grid_size, grid_size));
+    }
+}
+
+impl std::fmt::Display for Rule {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let a = match self.top {
+            CellState::Neutral => 0,
+            CellState::Player1 => 1,
+            CellState::Player2 => 2,
+        };
+        let b = match self.right {
+            CellState::Neutral => 0,
+            CellState::Player1 => 1,
+            CellState::Player2 => 2,
+        };
+        let c = match self.bottom {
+            CellState::Neutral => 0,
+            CellState::Player1 => 1,
+            CellState::Player2 => 2,
+        };
+        let d = match self.left {
+            CellState::Neutral => 0,
+            CellState::Player1 => 1,
+            CellState::Player2 => 2,
+        };
+        let rule_number = a * 1000 + b * 100 + c * 10 + d;
+
+        write!(f, "Rule {}", rule_number)
     }
 }
 
