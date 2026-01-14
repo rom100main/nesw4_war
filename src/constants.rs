@@ -11,6 +11,7 @@ pub const RULE_PICKER_NB_RULES: usize = 20;
 
 pub const SHOP_NB_RULES: usize = 8;
 pub const SHOP_PRICE_RULE: usize = 1;
+pub const SHOP_PRICE_DELETE_RULE: usize = 2;
 pub const SHOP_PRICE_SPAWN: usize = 1;
 pub const SHOP_ADD_SPAWN_PROBA: f32 = 0.0001;
 

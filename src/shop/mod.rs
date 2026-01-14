@@ -1,6 +1,6 @@
 use crate::constants::{
     COLOR_PLAYER1, COLOR_PLAYER2, PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES,
-    SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
+    SHOP_PRICE_DELETE_RULE, SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
 };
 use crate::player::Player;
 use crate::rule::Rule;
@@ -63,7 +63,19 @@ impl Shop {
         Ok(())
     }
 
-    pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
+    pub fn delete_rule(&mut self, player: &mut Player, index: usize) -> Result<(), ()> {
+        if player.money < SHOP_PRICE_DELETE_RULE {
+            return Err(());
+        }
+        if index >= player.rules.len() {
+            return Err(());
+        }
+        player.rules.remove(index);
+        player.money += SHOP_PRICE_DELETE_RULE;
+        Ok(())
+    }
+
+    pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player, opponent: &mut Player) {
         components::text::title(ui);
 
         let player_color = if self.current_player == 1 {
@@ -108,6 +120,65 @@ impl Shop {
                                     self.bought_rules[i] = true;
                                 }
                             }
+                        }
+                    }
+                });
+                ui.add_space(5.0);
+            }
+        });
+
+        ui.add_space(10.0);
+        ui.separator();
+        ui.add_space(10.0);
+
+        components::text::heading(ui, "Delete Rules");
+
+        let can_delete = player.money >= SHOP_PRICE_DELETE_RULE;
+
+        if !can_delete {
+            ui.label(format!("Can't afford (${})", SHOP_PRICE_DELETE_RULE));
+            ui.add_space(5.0);
+        }
+
+        components::text::heading_small(ui, "Your Rules");
+
+        ui.horizontal(|ui| {
+            for i in 0..player.rules.len() {
+                ui.vertical(|ui| {
+                    ui.set_max_width(CELL_SIZE * 3.0 + 25.0);
+                    player.rules[i].show(ui);
+                    ui.add_space(10.0);
+
+                    if can_delete {
+                        if ui
+                            .button(format!("Delete (${})", SHOP_PRICE_DELETE_RULE))
+                            .clicked()
+                        {
+                            let _ = self.delete_rule(player, i);
+                        }
+                    }
+                });
+                ui.add_space(5.0);
+            }
+        });
+
+        ui.add_space(10.0);
+
+        components::text::heading_small(ui, "Opponent's Rules");
+
+        ui.horizontal(|ui| {
+            for i in 0..opponent.rules.len() {
+                ui.vertical(|ui| {
+                    ui.set_max_width(CELL_SIZE * 3.0 + 25.0);
+                    opponent.rules[i].show(ui);
+                    ui.add_space(10.0);
+
+                    if can_delete {
+                        if ui
+                            .button(format!("Delete (${})", SHOP_PRICE_DELETE_RULE))
+                            .clicked()
+                        {
+                            let _ = self.delete_rule(opponent, i);
                         }
                     }
                 });

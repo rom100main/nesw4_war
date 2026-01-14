@@ -108,14 +108,14 @@ impl eframe::App for GameUI {
             Page::Shop => {
                 ctx.request_repaint_after(Duration::from_millis(100));
                 egui::CentralPanel::default().show(ctx, |ui| {
-                    let player = if self.game.shop.current_player == 1 {
+                    let (player, opponent) = if self.game.shop.current_player == 1 {
                         self.game.shop.player1_shopped = true;
-                        &mut self.game.player1
+                        (&mut self.game.player1, &mut self.game.player2)
                     } else {
                         self.game.shop.player2_shopped = true;
-                        &mut self.game.player2
+                        (&mut self.game.player2, &mut self.game.player1)
                     };
-                    self.game.shop.show(ui, player);
+                    self.game.shop.show(ui, player, opponent);
 
                     ui.add_space(10.0);
                     ui.separator();
