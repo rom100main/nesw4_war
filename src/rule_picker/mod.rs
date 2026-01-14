@@ -1,5 +1,5 @@
 pub use crate::rule::Rule;
-use crate::{CELL_SIZE, COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES};
+use crate::{CELL_SIZE, COLOR_PLAYER1, COLOR_PLAYER2, Player, RULE_PICKER_NB_RULES, components};
 
 use eframe::egui::{self, vec2};
 
@@ -35,18 +35,17 @@ impl RulePicker {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading(egui::RichText::new("NESW4: New Extreme Strategical Warfare 4").size(24.0));
-        ui.add_space(20.0);
+        components::text::title(ui);
 
         ui.vertical_centered(|ui| {
-            let (player_num, player_color) = if self.player1_choosing {
-                (1, COLOR_PLAYER1)
-            } else {
-                (2, COLOR_PLAYER2)
-            };
+            let player_num = if self.player1_choosing { 1 } else { 2 };
             ui.label(
                 egui::RichText::new(format!("Time for player {} to select", player_num))
-                    .color(player_color)
+                    .color(if self.player1_choosing {
+                        COLOR_PLAYER1
+                    } else {
+                        COLOR_PLAYER2
+                    })
                     .size(18.0)
                     .strong(),
             );

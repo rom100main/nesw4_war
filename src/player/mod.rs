@@ -1,4 +1,5 @@
 use crate::CELL_SIZE;
+use crate::components;
 use crate::constants::{PLAYER_MAX_RULES, PLAYER_SPAWN_PROBA, PLAYER_START_MONEY};
 use crate::rule::Rule;
 use eframe::egui;
@@ -33,8 +34,7 @@ impl Player {
         );
 
         ui.add_space(10.0);
-        ui.heading(egui::RichText::new("Rules").size(16.0));
-        ui.add_space(5.0);
+        components::text::heading_small(ui, "Rules");
         ui.label(egui::RichText::new(format!(
             "{}/{}",
             self.rules.len(),

@@ -1,3 +1,4 @@
+use crate::components;
 use crate::constants::{
     COLOR_PLAYER1, COLOR_PLAYER2, PLAYER_MAX_RULES, SHOP_ADD_SPAWN_PROBA, SHOP_NB_RULES,
     SHOP_PRICE_RULE, SHOP_PRICE_SPAWN,
@@ -63,17 +64,15 @@ impl Shop {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, player: &mut Player) {
-        ui.heading(egui::RichText::new("NESW4: New Extreme Strategical Warfare 4").size(24.0));
-        ui.add_space(20.0);
+        components::text::title(ui);
 
         let player_color = if self.current_player == 1 {
             COLOR_PLAYER1
         } else {
             COLOR_PLAYER2
         };
-        let player_name = format!("Player {} Shopping", self.current_player);
         ui.heading(
-            egui::RichText::new(player_name)
+            egui::RichText::new(format!("Player {} Shopping", self.current_player))
                 .color(player_color)
                 .size(18.0)
                 .strong(),
@@ -85,8 +84,7 @@ impl Shop {
         ui.separator();
         ui.add_space(10.0);
 
-        ui.label(egui::RichText::new("Rules").size(18.0));
-        ui.add_space(5.0);
+        components::text::heading(ui, "Rules");
 
         let can_buy = player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
         if !can_buy {
@@ -120,8 +118,7 @@ impl Shop {
         ui.separator();
         ui.add_space(10.0);
 
-        ui.label(egui::RichText::new("Spawn Probability").size(18.0));
-        ui.add_space(5.0);
+        components::text::heading(ui, "Spawn Probability");
 
         let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
         if !can_buy_spawn {

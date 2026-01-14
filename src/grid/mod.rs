@@ -1,4 +1,4 @@
-use crate::constants::{COLOR_GRID_LINE, COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2};
+use crate::constants::{COLOR_PLAYER1, COLOR_PLAYER2};
 use crate::rule::Rule;
 use crate::types::CellState;
 use eframe::egui;
@@ -147,24 +147,7 @@ impl Grid {
                 let cell_idx = row * self.width + col;
                 let cell_state = self.values[cell_idx];
 
-                match cell_state {
-                    CellState::Neutral => {
-                        painter.rect_filled(cell_rect, 0.0, COLOR_NEUTRAL);
-                    }
-                    CellState::Player1 => {
-                        painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER1);
-                    }
-                    CellState::Player2 => {
-                        painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER2);
-                    }
-                }
-
-                painter.rect_stroke(
-                    cell_rect,
-                    0.0,
-                    egui::Stroke::new(0.5, COLOR_GRID_LINE),
-                    egui::StrokeKind::Inside,
-                );
+                cell_state.show(&painter, cell_rect);
             }
         }
 

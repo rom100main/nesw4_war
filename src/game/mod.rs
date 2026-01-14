@@ -1,4 +1,5 @@
 use crate::PLAYER_ADD_MONEY;
+use crate::components;
 use crate::constants::{
     COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2, GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA,
 };
@@ -82,8 +83,7 @@ impl Game {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, shop_clicked: &mut bool) {
-        ui.heading(egui::RichText::new("NESW4: New Extreme Strategical Warfare 4").size(24.0));
-        ui.add_space(20.0);
+        components::text::title(ui);
 
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
@@ -134,8 +134,7 @@ impl Game {
                         } else {
                             format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
                         };
-                        ui.heading(egui::RichText::new(iter_text).size(18.0));
-                        ui.add_space(10.0);
+                        components::text::heading(ui, iter_text);
 
                         self.grid.show(ui);
 

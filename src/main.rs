@@ -1,3 +1,4 @@
+pub mod components;
 pub mod constants;
 pub mod game;
 pub mod grid;
@@ -15,7 +16,6 @@ pub use rule::Rule;
 pub use rule_picker::RulePicker;
 pub use shop::Shop;
 pub use types::CellState;
-pub use types::*;
 
 use eframe::egui;
 use rand::Rng;

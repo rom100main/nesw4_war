@@ -1,5 +1,4 @@
 use crate::CELL_SIZE;
-use crate::constants::{COLOR_GRID_LINE, COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2};
 use crate::types::CellState;
 use eframe::egui;
 
@@ -89,30 +88,8 @@ impl Rule {
             let cell_rect =
                 egui::Rect::from_min_size(egui::pos2(x, y), egui::vec2(CELL_SIZE, CELL_SIZE));
 
-            match cell_state {
-                CellState::Neutral => {
-                    painter.rect_filled(cell_rect, 0.0, COLOR_NEUTRAL);
-                }
-                CellState::Player1 => {
-                    painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER1);
-                }
-                CellState::Player2 => {
-                    painter.rect_filled(cell_rect, 0.0, COLOR_PLAYER2);
-                }
-            }
-
-            painter.rect_stroke(
-                cell_rect,
-                0.0,
-                egui::Stroke::new(0.5, COLOR_GRID_LINE),
-                egui::StrokeKind::Inside,
-            );
+            cell_state.show(&painter, cell_rect);
         }
-
-        egui::Rect::from_min_size(
-            egui::pos2(x_offset, y_offset),
-            egui::vec2(grid_size, grid_size),
-        );
 
         ui.allocate_space(egui::vec2(grid_size, grid_size));
     }
