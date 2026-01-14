@@ -19,6 +19,7 @@ pub struct Game {
     pub round_over: bool,
     pub round_result: Option<String>,
     pub shop_first_player: u8,
+    pub previous_grid_state: Option<Vec<CellState>>,
 }
 
 impl Game {
@@ -37,6 +38,7 @@ impl Game {
             round_over: false,
             round_result: None,
             shop_first_player: 1,
+            previous_grid_state: None,
         }
     }
 
@@ -48,6 +50,7 @@ impl Game {
         self.iteration = 0;
         self.round_over = false;
         self.round_result = None;
+        self.previous_grid_state = None;
     }
 
     fn new_shop(&mut self) {
@@ -64,7 +67,7 @@ impl Game {
         }
     }
 
-    fn end_round(&mut self) {
+    pub fn end_round(&mut self) {
         self.round_over = true;
         let p1_count = self.grid.count(CellState::Player1);
         let p2_count = self.grid.count(CellState::Player2);
@@ -130,7 +133,7 @@ impl Game {
                     ui.set_max_width(grid_section_width);
                     ui.vertical_centered(|ui| {
                         let iter_text = if self.round_over {
-                            format!("Round Over: {}/{}", self.iteration, MAX_ITERATIONS)
+                            format!("Round Over")
                         } else {
                             format!("Iteration: {}/{}", self.iteration, MAX_ITERATIONS)
                         };

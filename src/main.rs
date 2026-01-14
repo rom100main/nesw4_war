@@ -151,6 +151,16 @@ impl GameUI {
             .grid
             .next(&self.game.player1.rules, &self.game.player2.rules);
 
+        // Check if grid is identical to previous state
+        let current_grid_state = self.game.grid.values.clone();
+        if let Some(ref previous_state) = self.game.previous_grid_state {
+            if *previous_state == current_grid_state {
+                self.game.end_round();
+                return;
+            }
+        }
+        self.game.previous_grid_state = Some(current_grid_state);
+
         // Advance the iteration counter
         self.game.advance_iteration();
     }
