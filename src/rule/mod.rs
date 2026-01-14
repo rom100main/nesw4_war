@@ -1,6 +1,7 @@
 use crate::CELL_SIZE;
 use crate::grid::cell::CellState;
 use eframe::egui;
+use rand::Rng;
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct Rule {
@@ -44,6 +45,37 @@ impl Rule {
             {
                 return rule;
             }
+        }
+    }
+
+    pub fn new_direction(cell: CellState) -> Rule {
+        let mut rng = rand::thread_rng();
+        let pattern: usize = rng.gen_range(0..4);
+        match pattern {
+            0 => Rule {
+                top: cell,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            1 => Rule {
+                top: CellState::Neutral,
+                right: cell,
+                bottom: CellState::Neutral,
+                left: CellState::Neutral,
+            },
+            2 => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: cell,
+                left: CellState::Neutral,
+            },
+            _ => Rule {
+                top: CellState::Neutral,
+                right: CellState::Neutral,
+                bottom: CellState::Neutral,
+                left: cell,
+            },
         }
     }
 
