@@ -98,9 +98,12 @@ impl Shop {
 
         components::text::heading(ui, "Rules");
 
+        ui.label(format!("Cost: ${}", SHOP_PRICE_RULE));
+        ui.add_space(5.0);
+
         let can_buy = player.money >= SHOP_PRICE_RULE && player.rules.len() < PLAYER_MAX_RULES;
         if !can_buy {
-            ui.label(format!("Can't afford (${}) or full", SHOP_PRICE_RULE));
+            ui.label("Can't afford or full");
             ui.add_space(5.0);
         }
 
@@ -115,7 +118,7 @@ impl Shop {
                         ui.label(egui::RichText::new("bought").color(egui::Color32::DARK_GREEN));
                     } else {
                         if can_buy {
-                            if ui.button(format!("Buy (${})", SHOP_PRICE_RULE)).clicked() {
+                            if ui.button("Buy").clicked() {
                                 if self.buy_rule(player, i).is_ok() {
                                     self.bought_rules[i] = true;
                                 }
@@ -133,10 +136,13 @@ impl Shop {
 
         components::text::heading(ui, "Delete Rules");
 
+        ui.label(format!("Cost: ${}", SHOP_PRICE_DELETE_RULE));
+        ui.add_space(5.0);
+
         let can_delete = player.money >= SHOP_PRICE_DELETE_RULE;
 
         if !can_delete {
-            ui.label(format!("Can't afford (${})", SHOP_PRICE_DELETE_RULE));
+            ui.label("Can't afford");
             ui.add_space(5.0);
         }
 
@@ -145,15 +151,12 @@ impl Shop {
         ui.horizontal(|ui| {
             for i in 0..player.rules.len() {
                 ui.vertical(|ui| {
-                    ui.set_max_width(CELL_SIZE * 3.0 + 25.0);
+                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
                     player.rules[i].show(ui);
                     ui.add_space(10.0);
 
                     if can_delete {
-                        if ui
-                            .button(format!("Delete (${})", SHOP_PRICE_DELETE_RULE))
-                            .clicked()
-                        {
+                        if ui.button("Delete").clicked() {
                             let _ = self.delete_rule(player, i);
                         }
                     }
@@ -169,15 +172,12 @@ impl Shop {
         ui.horizontal(|ui| {
             for i in 0..opponent.rules.len() {
                 ui.vertical(|ui| {
-                    ui.set_max_width(CELL_SIZE * 3.0 + 25.0);
+                    ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
                     opponent.rules[i].show(ui);
                     ui.add_space(10.0);
 
                     if can_delete {
-                        if ui
-                            .button(format!("Delete (${})", SHOP_PRICE_DELETE_RULE))
-                            .clicked()
-                        {
+                        if ui.button("Delete").clicked() {
                             let _ = self.delete_rule(opponent, i);
                         }
                     }
@@ -192,19 +192,19 @@ impl Shop {
 
         components::text::heading(ui, "Spawn Probability");
 
+        ui.label(format!("Cost: ${}", SHOP_PRICE_SPAWN));
+        ui.add_space(5.0);
+
         let can_buy_spawn = player.money >= SHOP_PRICE_SPAWN;
         if !can_buy_spawn {
-            ui.label(format!("Can't afford (${})", SHOP_PRICE_SPAWN));
+            ui.label("Can't afford");
             ui.add_space(5.0);
         }
 
         ui.label(format!("Current: {:.4}", player.spawn_proba));
 
         if can_buy_spawn {
-            if ui
-                .button(format!("Upgrade Spawn (${})", SHOP_PRICE_SPAWN))
-                .clicked()
-            {
+            if ui.button("Upgrade Spawn").clicked() {
                 let _ = self.buy_spawn(player);
             }
         }
