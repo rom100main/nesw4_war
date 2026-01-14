@@ -1,6 +1,8 @@
+pub mod cell;
+
 use crate::constants::{COLOR_PLAYER1, COLOR_PLAYER2};
+use crate::grid::cell::CellState;
 use crate::rule::Rule;
-use crate::types::CellState;
 use eframe::egui;
 
 /// Coordinates:

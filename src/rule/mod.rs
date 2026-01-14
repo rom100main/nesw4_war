@@ -1,5 +1,5 @@
 use crate::CELL_SIZE;
-use crate::types::CellState;
+use crate::grid::cell::CellState;
 use eframe::egui;
 
 #[derive(PartialEq, Clone, Debug)]
@@ -98,7 +98,7 @@ impl Rule {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::CellState;
+    use crate::grid::cell::CellState;
 
     #[test]
     fn test_rule_next_true() {

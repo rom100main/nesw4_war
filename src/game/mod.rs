@@ -4,9 +4,9 @@ use crate::constants::{
     COLOR_NEUTRAL, COLOR_PLAYER1, COLOR_PLAYER2, GRID_SIZE, MAX_ITERATIONS, PLAYER_SPAWN_PROBA,
 };
 use crate::grid::Grid;
+use crate::grid::cell::CellState;
 use crate::player::Player;
 use crate::shop::Shop;
-use crate::types::CellState;
 use eframe::egui;
 
 pub struct Game {

@@ -6,16 +6,15 @@ pub mod player;
 pub mod rule;
 pub mod rule_picker;
 pub mod shop;
-pub mod types;
 
 pub use constants::*;
 pub use game::Game;
 pub use grid::Grid;
+pub use grid::cell::CellState;
 pub use player::Player;
 pub use rule::Rule;
 pub use rule_picker::RulePicker;
 pub use shop::Shop;
-pub use types::CellState;
 
 use eframe::egui;
 use rand::Rng;
