@@ -109,30 +109,35 @@ impl Shop {
                 ui.add_space(5.0);
             }
 
-            ui.horizontal(|ui| {
-                for i in 0..SHOP_NB_RULES {
-                    ui.vertical(|ui| {
-                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                        self.rules[i].show(ui);
-                        ui.add_space(10.0);
+            egui::ScrollArea::horizontal()
+                .id_salt("shop_rules")
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        for i in 0..SHOP_NB_RULES {
+                            ui.vertical(|ui| {
+                                ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                                self.rules[i].show(ui);
+                                ui.add_space(10.0);
 
-                        if self.bought_rules[i] {
-                            ui.label(
-                                egui::RichText::new("bought").color(egui::Color32::DARK_GREEN),
-                            );
-                        } else {
-                            if can_buy {
-                                if ui.button("Buy").clicked() {
-                                    if self.buy_rule(player, i).is_ok() {
-                                        self.bought_rules[i] = true;
+                                if self.bought_rules[i] {
+                                    ui.label(
+                                        egui::RichText::new("bought")
+                                            .color(egui::Color32::DARK_GREEN),
+                                    );
+                                } else {
+                                    if can_buy {
+                                        if ui.button("Buy").clicked() {
+                                            if self.buy_rule(player, i).is_ok() {
+                                                self.bought_rules[i] = true;
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                            });
+                            ui.add_space(5.0);
                         }
                     });
-                    ui.add_space(5.0);
-                }
-            });
+                });
 
             ui.add_space(10.0);
             ui.separator();
@@ -152,43 +157,51 @@ impl Shop {
 
             components::text::heading_small(ui, "Your Rules");
 
-            ui.horizontal(|ui| {
-                for i in 0..player.rules.len() {
-                    ui.vertical(|ui| {
-                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                        player.rules[i].show(ui);
-                        ui.add_space(10.0);
+            egui::ScrollArea::horizontal()
+                .id_salt("player_rules")
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        for i in 0..player.rules.len() {
+                            ui.vertical(|ui| {
+                                ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                                player.rules[i].show(ui);
+                                ui.add_space(10.0);
 
-                        if can_delete {
-                            if ui.button("Delete").clicked() {
-                                let _ = self.delete_rule(player, i);
-                            }
+                                if can_delete {
+                                    if ui.button("Delete").clicked() {
+                                        let _ = self.delete_rule(player, i);
+                                    }
+                                }
+                            });
+                            ui.add_space(5.0);
                         }
                     });
-                    ui.add_space(5.0);
-                }
-            });
+                });
 
             ui.add_space(10.0);
 
             components::text::heading_small(ui, "Opponent's Rules");
 
-            ui.horizontal(|ui| {
-                for i in 0..opponent.rules.len() {
-                    ui.vertical(|ui| {
-                        ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
-                        opponent.rules[i].show(ui);
-                        ui.add_space(10.0);
+            egui::ScrollArea::horizontal()
+                .id_salt("opponent_rules")
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        for i in 0..opponent.rules.len() {
+                            ui.vertical(|ui| {
+                                ui.set_max_width(CELL_SIZE * 3.0 + 10.0);
+                                opponent.rules[i].show(ui);
+                                ui.add_space(10.0);
 
-                        if can_delete {
-                            if ui.button("Delete").clicked() {
-                                let _ = self.delete_rule(opponent, i);
-                            }
+                                if can_delete {
+                                    if ui.button("Delete").clicked() {
+                                        let _ = self.delete_rule(opponent, i);
+                                    }
+                                }
+                            });
+                            ui.add_space(5.0);
                         }
                     });
-                    ui.add_space(5.0);
-                }
-            });
+                });
 
             ui.add_space(10.0);
             ui.separator();
