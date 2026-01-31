@@ -71,7 +71,7 @@ impl Shop {
             return Err(());
         }
         player.rules.remove(index);
-        player.money += SHOP_PRICE_DELETE_RULE;
+        player.money -= SHOP_PRICE_DELETE_RULE;
         Ok(())
     }
 
@@ -207,9 +207,12 @@ impl Shop {
                             ui.add_space(5.0);
                         }
                     });
-                    // Delete in reverse order to avoid index shifting
+                    // Delete opponent's rule and charge current player
                     for i in indices_to_delete.iter().rev() {
-                        let _ = self.delete_rule(opponent, *i);
+                        if opponent.rules.len() > *i {
+                            opponent.rules.remove(*i);
+                            player.money -= SHOP_PRICE_DELETE_RULE;
+                        }
                     }
                 });
 
