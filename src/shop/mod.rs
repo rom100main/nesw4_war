@@ -160,6 +160,7 @@ impl Shop {
             egui::ScrollArea::horizontal()
                 .id_salt("player_rules")
                 .show(ui, |ui| {
+                    let mut indices_to_delete = Vec::new();
                     ui.horizontal(|ui| {
                         for i in 0..player.rules.len() {
                             ui.vertical(|ui| {
@@ -169,13 +170,17 @@ impl Shop {
 
                                 if can_delete {
                                     if ui.button("Delete").clicked() {
-                                        let _ = self.delete_rule(player, i);
+                                        indices_to_delete.push(i);
                                     }
                                 }
                             });
                             ui.add_space(5.0);
                         }
                     });
+                    // Delete in reverse order to avoid index shifting
+                    for i in indices_to_delete.iter().rev() {
+                        let _ = self.delete_rule(player, *i);
+                    }
                 });
 
             ui.add_space(10.0);
@@ -185,6 +190,7 @@ impl Shop {
             egui::ScrollArea::horizontal()
                 .id_salt("opponent_rules")
                 .show(ui, |ui| {
+                    let mut indices_to_delete = Vec::new();
                     ui.horizontal(|ui| {
                         for i in 0..opponent.rules.len() {
                             ui.vertical(|ui| {
@@ -194,13 +200,17 @@ impl Shop {
 
                                 if can_delete {
                                     if ui.button("Delete").clicked() {
-                                        let _ = self.delete_rule(opponent, i);
+                                        indices_to_delete.push(i);
                                     }
                                 }
                             });
                             ui.add_space(5.0);
                         }
                     });
+                    // Delete in reverse order to avoid index shifting
+                    for i in indices_to_delete.iter().rev() {
+                        let _ = self.delete_rule(opponent, *i);
+                    }
                 });
 
             ui.add_space(10.0);
