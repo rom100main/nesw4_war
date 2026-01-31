@@ -18,13 +18,17 @@ NESW4 is a competitive game where two players fight to dominate the grid by stra
 
 ## Game Flow
 
-1. **Starting Rule Selection**: Both players take turns selecting their initial rules
+1. **Starting Rule Selection**: Both players take turns selecting their initial rules.
 2. **Rounds (repeat)**:
-   - **Battle Phase**: The grid evolves for 128 iterations based on player rules
-   - **Shop Phase**: The loser of the battle shops first, then the winner. Players earn money and can buy new rules or upgrade spawn probability
+   - **Battle Phase**: The grid evolves for 128 iterations based on player rules. The player with the most cells at the end wins the round.
+   - **Shop Phase**: The loser of the battle shops first, then the winner. Players earn money and can buy new rules, delete a rule from a player or upgrade spawn probability.
 
 ## Building and Running
 
 ```bash
 cargo run --release
 ```
+
+---
+
+Have fun dominating the grid!
