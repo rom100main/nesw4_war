@@ -1753,6 +1753,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nesw4"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "rand",
+]
+
+[[package]]
 name = "nix"
 version = "0.30.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2852,14 +2860,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3198b4b0a8e11f09dd03e133c0280504d0801269e9afa46362ffde1cbeebf44"
 dependencies = [
  "winnow",
-]
-
-[[package]]
-name = "toom_war"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "rand",
 ]
 
 [[package]]
